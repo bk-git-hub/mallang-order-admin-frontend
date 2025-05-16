@@ -8,7 +8,9 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-ml-bg-gray: #e8e9eb;
   --color-ml-gray: #e6eff3;
+  --color-ml-gray-dark: #9898a3;
   --color-ml-yellow: #ffd259;
   --color-ml-yellow-light: #ffedb9;
   --font-sans: var(--font-geist-sans);
