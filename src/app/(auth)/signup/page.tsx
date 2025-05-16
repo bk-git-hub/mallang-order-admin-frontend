@@ -28,12 +28,14 @@ export default function SignUp() {
     handleSubmit,
     formState: { errors, isSubmitting },
     watch,
+    setValue,
   } = useForm<SignUpFormData>({
     resolver: zodResolver(signUpSchema),
   });
 
   const email = watch('email');
   const storeName = watch('storeName');
+  const name = watch('name');
 
   const handleEmailVerification = async () => {
     try {
@@ -66,6 +68,10 @@ export default function SignUp() {
     }
   };
 
+  const handleClearName = () => {
+    setValue('name', '');
+  };
+
   const onSubmit = async (data: SignUpFormData) => {
     if (!isEmailVerified) {
       alert('이메일 인증이 필요합니다.');
@@ -90,10 +96,12 @@ export default function SignUp() {
       <div className=''>
         <div>
           <div className='flex flex-col gap-2'>
-            <h2 className='text-[40px] inter-bold font-bold text-gray-900'>
+            <h2 className='text-[40px] inter-bold font-bold  text-gray-900'>
               Sign up
             </h2>
-            <p>말랑오더에 가입하고 효율적인 가게 관리를 시작해볼까요?</p>
+            <p className='inter-regular text-[15px] text-[#667085]'>
+              말랑오더에 가입하고 효율적인 가게 관리를 시작해볼까요?
+            </p>
           </div>
         </div>
         <form
@@ -103,15 +111,26 @@ export default function SignUp() {
           <div className='rounded-md shadow-sm'>
             <div className='relative h-20 flex flex-col gap-2'>
               <label htmlFor='name'>Your Name</label>
-              <input
-                id='name'
-                type='text'
-                {...register('name')}
-                className={`appearance-none rounded-none relative block w-full px-3 py-2 border ${
-                  errors.name ? 'border-red-300' : 'border-gray-300'
-                } placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:z-10 sm:text-sm`}
-                placeholder='김말랑'
-              />
+              <div className='relative'>
+                <input
+                  id='name'
+                  type='text'
+                  {...register('name')}
+                  className={`appearance-none rounded-none relative block w-full px-3 py-2 border ${
+                    errors.name ? 'border-red-300' : 'border-gray-300'
+                  } placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:z-10 sm:text-sm`}
+                  placeholder='김말랑'
+                />
+                {name && (
+                  <button
+                    type='button'
+                    onClick={handleClearName}
+                    className='absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 z-10'
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
               {errors.name && (
                 <p className='absolute bottom-[-8px] text-sm text-red-600'>
                   {errors.name.message}
@@ -228,7 +247,7 @@ export default function SignUp() {
           href='/login'
           className='font-medium text-ml-yellow w-[360px] flex justify-center mt-[18px]'
         >
-          sign in to your account
+          이미 회원이신가요? Login
         </Link>
       </div>
     </div>
