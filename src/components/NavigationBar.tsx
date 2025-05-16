@@ -1,42 +1,43 @@
+'use client';
+
 import Link from 'next/link';
 import Image from 'next/image';
+import { usePathname } from 'next/navigation';
+
 export default function NavigationBar() {
+  const pathname = usePathname();
+
+  const navItems = [
+    { href: '/dashboard', label: '가게 관리', icon: 'dashboard' },
+    { href: '/tables', label: '테이블 관리', icon: 'Table' },
+    { href: '/categories', label: '카테고리 관리', icon: 'Cate' },
+    { href: '/menus', label: '메뉴 관리', icon: 'Menu' },
+    { href: '/orders', label: '주문 관리', icon: 'Order' },
+  ];
+
   return (
-    <div className='w-[18%] rounded-r-[25px] text-white bg-ml-yellow h-full flex flex-col justify-between p-5'>
+    <div className='w-[18%] rounded-r-[25px] text-white bg-ml-yellow h-full flex flex-col justify-between '>
       <ul className='flex flex-col gap-2 w-[84%] mx-auto mt-24'>
-        <li className='w-full py-4 rounded-2xl '>
-          <Link href='/dashboard' className='flex items-center gap-2'>
-            <Image src='/dashboard.svg' alt='logo' width={18} height={18} />
-            <p>가게 관리</p>
-          </Link>
-        </li>
-        <li className='w-full py-4 rounded-2xl '>
-          <Link href='/tables' className='flex items-center gap-2'>
-            <Image src='/Table.svg' alt='logo' width={18} height={18} />
-            <p>가게 관리</p>
-          </Link>
-        </li>
-        <li className='w-full py-4 rounded-2xl '>
-          <Link href='/categories' className='flex items-center gap-2'>
-            <Image src='/Cate.svg' alt='logo' width={18} height={18} />
-            <p>카테고리 관리</p>
-          </Link>
-        </li>
-        <li className='w-full py-4 rounded-2xl '>
-          <Link href='/menus' className='flex items-center gap-2'>
-            <Image src='/Menu.svg' alt='logo' width={18} height={18} />
-            <p>메뉴 관리</p>
-          </Link>
-        </li>
-        <li className='w-full py-4 rounded-2xl '>
-          <Link href='/orders' className='flex items-center gap-2'>
-            <Image src='/Order.svg' alt='logo' width={18} height={18} />
-            <p>주문 관리</p>
-          </Link>
-        </li>
+        {navItems.map(({ href, label, icon }) => {
+          const isSelected = pathname === href;
+          const imageSrc = `/${icon}${isSelected ? 'S' : ''}.svg`;
+          return (
+            <li
+              key={href}
+              className={`w-full p-4 rounded-2xl ${
+                isSelected ? 'bg-[#e6eff3] text-[#333333]' : ''
+              }`}
+            >
+              <Link href={href} className='flex items-center gap-2'>
+                <Image src={imageSrc} alt={label} width={18} height={18} />
+                <p>{label}</p>
+              </Link>
+            </li>
+          );
+        })}
       </ul>
 
-      <p>Profile Placeholder</p>
+      <p className='p-5'>Profile Placeholder</p>
     </div>
   );
 }
