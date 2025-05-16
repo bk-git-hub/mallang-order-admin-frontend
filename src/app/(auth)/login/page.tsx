@@ -66,7 +66,7 @@ export default function Login() {
           className='mt-10 gap-5 w-[360px]'
           onSubmit={handleSubmit(onSubmit)}
         >
-          <div className='rounded-md shadow-sm'>
+          <div className='rounded-md'>
             <div className='relative h-20'>
               <label htmlFor='email'>Email</label>
               <div className='relative'>
@@ -75,9 +75,9 @@ export default function Login() {
                   type='email'
                   autoComplete='email'
                   {...register('email')}
-                  className={`appearance-none rounded-none relative block w-full px-3 py-2 border ${
+                  className={`appearance-none rounded-[8px] relative block w-full px-3 py-2 border ${
                     errors.email ? 'border-red-300' : 'border-gray-300'
-                  } placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:z-10 sm:text-sm`}
+                  } placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:border-ml-yellow focus:z-10 sm:text-sm`}
                   placeholder='youremail@example.com'
                 />
                 {email && (
@@ -104,9 +104,9 @@ export default function Login() {
                   type={showPassword ? 'text' : 'password'}
                   autoComplete='current-password'
                   {...register('password')}
-                  className={`appearance-none rounded-none relative block w-full px-3 py-2 border ${
+                  className={`appearance-none rounded-[8px] relative block w-full px-3 py-2 border ${
                     errors.password ? 'border-red-300' : 'border-gray-300'
-                  } placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:z-10 sm:text-sm`}
+                  } placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:border-ml-yellow focus:z-10 sm:text-sm`}
                   placeholder='Enter your password'
                 />
                 <button

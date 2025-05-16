@@ -108,7 +108,7 @@ export default function SignUp() {
           className='mt-10 gap-5 w-[360px]'
           onSubmit={handleSubmit(onSubmit)}
         >
-          <div className='rounded-md shadow-sm'>
+          <div className='rounded-md'>
             <div className='relative h-20 flex flex-col gap-2'>
               <label htmlFor='name'>Your Name</label>
               <div className='relative'>
@@ -116,9 +116,9 @@ export default function SignUp() {
                   id='name'
                   type='text'
                   {...register('name')}
-                  className={`appearance-none rounded-none relative block w-full px-3 py-2 border ${
+                  className={`appearance-none rounded-[8px] relative block w-full px-3 py-2 border ${
                     errors.name ? 'border-red-300' : 'border-gray-300'
-                  } placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:z-10 sm:text-sm`}
+                  } placeholder-gray-500 text-gray-900 focus:outline-none focus:border-ml-yellow focus:z-10 sm:text-sm`}
                   placeholder='김말랑'
                 />
                 {name && (
@@ -144,9 +144,9 @@ export default function SignUp() {
                   id='storeName'
                   type='text'
                   {...register('storeName')}
-                  className={`appearance-none rounded-none relative block w-[265px] px-3 py-2 border ${
+                  className={`appearance-none rounded-[8px] relative block w-[265px] px-3 py-2 border ${
                     errors.storeName ? 'border-red-300' : 'border-gray-300'
-                  } placeholder-gray-500 text-gray-900 focus:outline-none  focus:z-10 sm:text-sm`}
+                  } placeholder-gray-500 text-gray-900 focus:outline-none focus:border-ml-yellow focus:z-10 sm:text-sm`}
                   placeholder='Store Name'
                 />
                 <button
@@ -172,9 +172,9 @@ export default function SignUp() {
                   type='email'
                   autoComplete='email'
                   {...register('email')}
-                  className={`appearance-none rounded-none relative block w-[265px] px-3 py-2 border ${
+                  className={`appearance-none rounded-[8px] relative block w-[265px] px-3 py-2 border ${
                     errors.email ? 'border-red-300' : 'border-gray-300'
-                  } placeholder-gray-500 text-gray-900 focus:outline-none focus:z-10 sm:text-sm`}
+                  } placeholder-gray-500 text-gray-900 focus:outline-none focus:border-ml-yellow focus:z-10 sm:text-sm`}
                   placeholder='youremail@example.com'
                 />
                 <button
@@ -200,7 +200,7 @@ export default function SignUp() {
                   type='text'
                   value={verificationCode}
                   onChange={(e) => setVerificationCode(e.target.value)}
-                  className='appearance-none rounded-none relative block w-[265px] px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none  focus:z-10 sm:text-sm'
+                  className='appearance-none rounded-[8px] relative block w-[265px] px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:border-ml-yellow focus:z-10 sm:text-sm'
                   placeholder='인증번호 6자리를 입력해주세요요'
                 />
                 <button
@@ -220,9 +220,9 @@ export default function SignUp() {
                 type='password'
                 autoComplete='new-password'
                 {...register('password')}
-                className={`appearance-none rounded-none relative block w-full px-3 py-2 border ${
+                className={`appearance-none rounded-[8px] relative block w-full px-3 py-2 border ${
                   errors.password ? 'border-red-300' : 'border-gray-300'
-                } placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none  sm:text-sm`}
+                } placeholder-gray-500 text-gray-900 focus:outline-none focus:border-ml-yellow focus:z-10 sm:text-sm`}
                 placeholder='영문, 숫자, 하나 이상의 특수문자를 포함하는 8 ~ 16자'
               />
               {errors.password && (
