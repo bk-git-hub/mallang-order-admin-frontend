@@ -2,7 +2,15 @@ import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import { Inter } from 'next/font/google';
 import { Barlow } from 'next/font/google';
+import { Poppins } from 'next/font/google';
 import './globals.css';
+
+const poppins = Poppins({
+  weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
+  subsets: ['latin'],
+  variable: '--font-poppins',
+  display: 'swap',
+});
 
 const barlow = Barlow({
   weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
@@ -40,7 +48,7 @@ export default function RootLayout({
   return (
     <html lang='en'>
       <body
-        className={`${barlow.variable} ${inter.variable} ${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${barlow.variable} ${inter.variable} ${geistSans.variable} ${geistMono.variable} ${poppins.variable} antialiased`}
       >
         {children}
       </body>
