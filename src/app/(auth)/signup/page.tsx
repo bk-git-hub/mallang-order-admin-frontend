@@ -105,7 +105,7 @@ export default function SignUp() {
           </div>
         </div>
         <form
-          className='mt-10 gap-5 w-[360px]'
+          className='mt-2 gap-5 w-[360px]'
           onSubmit={handleSubmit(onSubmit)}
         >
           <div className='rounded-md'>
