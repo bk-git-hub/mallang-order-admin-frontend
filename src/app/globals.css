@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 :root {
   --background: #ffffff;
@@ -8,8 +8,12 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-ml-yellow: #ffd259;
+  --color-ml-yellow-light: #ffedb9;
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-inter: var(--font-inter);
+  --font-barlow: var(--font-barlow);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -22,5 +26,135 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-barlow), Arial, Helvetica, sans-serif;
+}
+
+/* Barlow font utility classes */
+.barlow {
+  font-family: var(--font-barlow), sans-serif;
+  font-style: normal;
+}
+
+.barlow-thin {
+  font-family: var(--font-barlow), sans-serif;
+  font-weight: 100;
+  font-style: normal;
+}
+
+.barlow-extralight {
+  font-family: var(--font-barlow), sans-serif;
+  font-weight: 200;
+  font-style: normal;
+}
+
+.barlow-light {
+  font-family: var(--font-barlow), sans-serif;
+  font-weight: 300;
+  font-style: normal;
+}
+
+.barlow-regular {
+  font-family: var(--font-barlow), sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.barlow-medium {
+  font-family: var(--font-barlow), sans-serif;
+  font-weight: 500;
+  font-style: normal;
+}
+
+.barlow-semibold {
+  font-family: var(--font-barlow), sans-serif;
+  font-weight: 600;
+  font-style: normal;
+}
+
+.barlow-bold {
+  font-family: var(--font-barlow), sans-serif;
+  font-weight: 700;
+  font-style: normal;
+}
+
+.barlow-extrabold {
+  font-family: var(--font-barlow), sans-serif;
+  font-weight: 800;
+  font-style: normal;
+}
+
+.barlow-black {
+  font-family: var(--font-barlow), sans-serif;
+  font-weight: 900;
+  font-style: normal;
+}
+
+/* Inter font utility classes */
+.inter {
+  font-family: var(--font-inter), sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
+
+.inter-thin {
+  font-family: var(--font-inter), sans-serif;
+  font-weight: 100;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
+
+.inter-extralight {
+  font-family: var(--font-inter), sans-serif;
+  font-weight: 200;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
+
+.inter-light {
+  font-family: var(--font-inter), sans-serif;
+  font-weight: 300;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
+
+.inter-regular {
+  font-family: var(--font-inter), sans-serif;
+  font-weight: 400;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
+
+.inter-medium {
+  font-family: var(--font-inter), sans-serif;
+  font-weight: 500;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
+
+.inter-semibold {
+  font-family: var(--font-inter), sans-serif;
+  font-weight: 600;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
+
+.inter-bold {
+  font-family: var(--font-inter), sans-serif;
+  font-weight: 700;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
+
+.inter-extrabold {
+  font-family: var(--font-inter), sans-serif;
+  font-weight: 800;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
+
+.inter-black {
+  font-family: var(--font-inter), sans-serif;
+  font-weight: 900;
+  font-optical-sizing: auto;
+  font-style: normal;
 }
