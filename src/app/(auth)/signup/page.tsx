@@ -39,32 +39,80 @@ export default function SignUp() {
 
   const handleEmailVerification = async () => {
     try {
-      // TODO: Implement email verification logic
-      console.log('Sending verification code to:', email);
+      const response = await fetch(
+        `https://${process.env.NEXT_PUBLIC_API_URL}/api/admin/emailSend`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error('이메일 인증번호 발송에 실패했습니다.');
+      }
+
       setShowVerificationInput(true);
     } catch (error) {
       console.error('Email verification failed:', error);
+      alert('이메일 인증번호 발송에 실패했습니다.');
     }
   };
 
   const handleVerifyCode = async () => {
     try {
-      // TODO: Implement verification code check logic
-      console.log('Verifying code:', verificationCode);
+      const response = await fetch(
+        `https://${process.env.NEXT_PUBLIC_API_URL}/api/admin/emailCheck`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email,
+            authNum: verificationCode,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error('인증번호가 일치하지 않습니다.');
+      }
+
       setIsEmailVerified(true);
       setShowVerificationInput(false);
     } catch (error) {
       console.error('Code verification failed:', error);
+      alert('인증번호 확인에 실패했습니다.');
     }
   };
 
   const handleStoreNameCheck = async () => {
     try {
-      // TODO: Implement store name duplicate check logic
-      console.log('Checking store name:', storeName);
+      const response = await fetch(
+        `https://${process.env.NEXT_PUBLIC_API_URL}/api/admin/nameCheck`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            adminName: storeName,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error('이미 사용중인 가게 이름입니다.');
+      }
+
       setIsStoreNameChecked(true);
+      alert('사용 가능한 가게 이름입니다.');
     } catch (error) {
       console.error('Store name check failed:', error);
+      alert('가게 이름 중복 확인에 실패했습니다.');
     }
   };
 
@@ -83,11 +131,31 @@ export default function SignUp() {
     }
 
     try {
-      // TODO: Implement your sign-up logic here
-      console.log('Form submitted:', data);
-      router.push('/login'); // Redirect to login page after successful signup
+      const response = await fetch(
+        `https://${process.env.NEXT_PUBLIC_API_URL}/api/admin/join`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email: data.email,
+            password: data.password,
+            adminName: data.name,
+            storeName: data.storeName,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error('회원가입에 실패했습니다.');
+      }
+
+      alert('회원가입이 완료되었습니다.');
+      router.push('/login');
     } catch (error) {
       console.error('Sign-up failed:', error);
+      alert('회원가입에 실패했습니다.');
     }
   };
 
