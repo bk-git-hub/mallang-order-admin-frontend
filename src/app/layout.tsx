@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from 'next/font/google';
 import { Inter } from 'next/font/google';
 import { Barlow } from 'next/font/google';
 import { Poppins } from 'next/font/google';
+import { Toaster } from '@/components/ui/sonner';
 import './globals.css';
 
 const poppins = Poppins({
@@ -51,6 +52,7 @@ export default function RootLayout({
         className={`${barlow.variable} ${inter.variable} ${geistSans.variable} ${geistMono.variable} ${poppins.variable} antialiased`}
       >
         {children}
+        <Toaster />
       </body>
     </html>
   );
