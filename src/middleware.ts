@@ -3,20 +3,20 @@ import type { NextRequest } from 'next/server';
 
 // This function can be marked `async` if using `await` inside
 export function middleware(request: NextRequest) {
-  const token = request.cookies.get('auth-token');
-  const isAuthPage =
-    request.nextUrl.pathname.startsWith('/login') ||
-    request.nextUrl.pathname.startsWith('/signup');
+  // const token = request.cookies.get('auth-token');
+  // const isAuthPage =
+  //   request.nextUrl.pathname.startsWith('/login') ||
+  //   request.nextUrl.pathname.startsWith('/signup');
 
-  // If trying to access auth pages while logged in, redirect to dashboard
-  if (isAuthPage && token) {
-    return NextResponse.redirect(new URL('/dashboard', request.url));
-  }
+  // // If trying to access auth pages while logged in, redirect to dashboard
+  // if (isAuthPage && token) {
+  //   return NextResponse.redirect(new URL('/dashboard', request.url));
+  // }
 
-  // If trying to access protected pages while not logged in, redirect to login
-  if (!isAuthPage && !token) {
-    return NextResponse.redirect(new URL('/login', request.url));
-  }
+  // // If trying to access protected pages while not logged in, redirect to login
+  // if (!isAuthPage && !token) {
+  //   return NextResponse.redirect(new URL('/login', request.url));
+  // }
 
   return NextResponse.next();
 }
