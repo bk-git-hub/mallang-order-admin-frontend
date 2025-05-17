@@ -6,6 +6,7 @@ import { z } from 'zod';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useState } from 'react';
+import { toast } from 'sonner';
 
 const signUpSchema = z.object({
   name: z.string().min(1, '이름을 입력해주세요'),
@@ -40,7 +41,7 @@ export default function SignUp() {
   const handleEmailVerification = async () => {
     try {
       const response = await fetch(
-        `https://${process.env.NEXT_PUBLIC_API_URL}/api/admin/emailSend`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/admin/emailSend`,
         {
           method: 'POST',
           headers: {
@@ -55,16 +56,17 @@ export default function SignUp() {
       }
 
       setShowVerificationInput(true);
+      toast('인증번호가 전송되었습니다');
     } catch (error) {
       console.error('Email verification failed:', error);
-      alert('이메일 인증번호 발송에 실패했습니다.');
+      toast('이메일 인증번호 발송에 실패했습니다');
     }
   };
 
   const handleVerifyCode = async () => {
     try {
       const response = await fetch(
-        `https://${process.env.NEXT_PUBLIC_API_URL}/api/admin/emailCheck`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/admin/emailCheck`,
         {
           method: 'POST',
           headers: {
@@ -83,16 +85,17 @@ export default function SignUp() {
 
       setIsEmailVerified(true);
       setShowVerificationInput(false);
+      toast('이메일 인증에 성공했습니다.');
     } catch (error) {
       console.error('Code verification failed:', error);
-      alert('인증번호 확인에 실패했습니다.');
+      toast('인증번호 확인에 실패했습니다');
     }
   };
 
   const handleStoreNameCheck = async () => {
     try {
       const response = await fetch(
-        `https://${process.env.NEXT_PUBLIC_API_URL}/api/admin/nameCheck`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/admin/checkStoreName`,
         {
           method: 'POST',
           headers: {
@@ -109,10 +112,10 @@ export default function SignUp() {
       }
 
       setIsStoreNameChecked(true);
-      alert('사용 가능한 가게 이름입니다.');
+      toast('사용 가능한 가게 이름입니다.');
     } catch (error) {
       console.error('Store name check failed:', error);
-      alert('가게 이름 중복 확인에 실패했습니다.');
+      toast('가게 이름 중복 확인에 실패했습니다.');
     }
   };
 
@@ -122,17 +125,17 @@ export default function SignUp() {
 
   const onSubmit = async (data: SignUpFormData) => {
     if (!isEmailVerified) {
-      alert('이메일 인증이 필요합니다.');
+      toast('이메일 인증이 필요합니다.');
       return;
     }
     if (!isStoreNameChecked) {
-      alert('가게 이름 중복 확인이 필요합니다.');
+      toast('가게 이름 중복 확인이 필요합니다.');
       return;
     }
 
     try {
       const response = await fetch(
-        `https://${process.env.NEXT_PUBLIC_API_URL}/api/admin/join`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/admin/join`,
         {
           method: 'POST',
           headers: {
@@ -151,11 +154,11 @@ export default function SignUp() {
         throw new Error('회원가입에 실패했습니다.');
       }
 
-      alert('회원가입이 완료되었습니다.');
+      toast('회원가입이 완료되었습니다.');
       router.push('/login');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Sign-up failed:', error);
-      alert('회원가입에 실패했습니다.');
+      toast(error.message || '회원가입에 실패했습니다.');
     }
   };
 
@@ -221,7 +224,7 @@ export default function SignUp() {
                   type='button'
                   onClick={handleStoreNameCheck}
                   disabled={!storeName || isStoreNameChecked}
-                  className='border-ml-yellow rounded-[8px] px-2 py-2.5 font-normal text-ml-yellow bg-white focus:outline-none focus:ring-2 focus:ring-offset-2  disabled:opacity-50 disabled:cursor-not-allowed'
+                  className='border flex-1 border-ml-yellow rounded-[8px] px-2 py-2.5 font-normal text-ml-yellow bg-white focus:outline-none focus:ring-2 focus:ring-offset-2  disabled:opacity-50 disabled:cursor-not-allowed'
                 >
                   {isStoreNameChecked ? '확인완료' : '중복확인'}
                 </button>
@@ -249,7 +252,7 @@ export default function SignUp() {
                   type='button'
                   onClick={handleEmailVerification}
                   disabled={!email || isEmailVerified}
-                  className='border-ml-yellow rounded-[8px] px-2 py-2.5 font-normal text-ml-yellow bg-white focus:outline-none focus:ring-2 focus:ring-offset-2  disabled:opacity-50 disabled:cursor-not-allowed'
+                  className='border border-ml-yellow rounded-[8px] px-2 py-2.5 font-normal text-ml-yellow bg-white focus:outline-none focus:ring-2 focus:ring-offset-2  disabled:opacity-50 disabled:cursor-not-allowed flex-1'
                 >
                   {isEmailVerified ? '인증완료' : '인증하기'}
                 </button>
@@ -265,17 +268,18 @@ export default function SignUp() {
               <div className='flex gap-3'>
                 <input
                   id='verificationCode'
+                  disabled={!showVerificationInput}
                   type='text'
                   value={verificationCode}
                   onChange={(e) => setVerificationCode(e.target.value)}
-                  className='appearance-none rounded-[8px] relative block w-[265px] px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:border-ml-yellow focus:z-10 sm:text-sm'
-                  placeholder='인증번호 6자리를 입력해주세요요'
+                  className='appearance-none rounded-[8px] relative block w-[265px] px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:border-ml-yellow focus:z-10 sm:text-sm disabled:placeholder-ml-gray disabled:cursor-not-allowed'
+                  placeholder='인증번호 6자리를 입력해주세요'
                 />
                 <button
                   type='button'
                   onClick={handleVerifyCode}
                   disabled={!showVerificationInput}
-                  className='border-ml-yellow rounded-[8px] px-2 py-2.5 font-normal flex-1 text-ml-yellow bg-white focus:outline-none focus:ring-2 focus:ring-offset-2 '
+                  className='border border-ml-yellow rounded-[8px] px-2 py-2.5 font-normal flex-1 text-ml-yellow bg-white focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed'
                 >
                   확인
                 </button>
