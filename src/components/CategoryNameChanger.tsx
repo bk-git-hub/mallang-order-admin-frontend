@@ -44,6 +44,9 @@ export default function CategoryNameChanger({
         `${process.env.NEXT_PUBLIC_API_URL}/api/category/${selectedCategory.category_id}`,
         {
           method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
           body: JSON.stringify({ categoryName: newCategoryName }),
         }
       );
