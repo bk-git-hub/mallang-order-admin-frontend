@@ -49,14 +49,16 @@ export default function Categories() {
     }
   };
 
-  // API 응답 데이터를 컴포넌트 형식으로 변환
+  // API 응답 데이터를 컴포넌트 형식으로 변환 (Default 카테고리 제외)
   const transformCategories = (
     apiCategories: APICategory[]
   ): ComponentCategory[] => {
-    return apiCategories.map((cat) => ({
-      category_id: cat.categoryId.toString(),
-      category_name: cat.categoryName,
-    }));
+    return apiCategories
+      .filter((cat) => cat.categoryName !== 'Default')
+      .map((cat) => ({
+        category_id: cat.categoryId.toString(),
+        category_name: cat.categoryName,
+      }));
   };
 
   const handleAddCategory = async () => {

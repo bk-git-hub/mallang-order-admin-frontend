@@ -65,8 +65,12 @@ export default function Menus() {
       );
       if (!response.ok) throw new Error('Failed to fetch categories');
       const data = await response.json();
-      setCategories(data);
-      if (data.length > 0) setMenuCategory(data[0].categoryId.toString());
+      const filteredCategories = data.filter(
+        (cat: Category) => cat.categoryName !== 'Default'
+      );
+      setCategories(filteredCategories);
+      if (filteredCategories.length > 0)
+        setMenuCategory(filteredCategories[0].categoryId.toString());
     } catch (error) {
       console.error('Failed to fetch categories:', error);
       toast.error('카테고리 목록을 불러오는데 실패했습니다');
@@ -279,13 +283,11 @@ export default function Menus() {
               className='border border-ml-gray-dark rounded-xl p-2 focus:outline-0 focus:border-ml-yellow'
             >
               <option value={0}>전체 카테고리</option>
-              {categories
-                .filter((cat) => cat.categoryName !== 'Default')
-                .map((category) => (
-                  <option key={category.categoryId} value={category.categoryId}>
-                    {category.categoryName}
-                  </option>
-                ))}
+              {categories.map((category) => (
+                <option key={category.categoryId} value={category.categoryId}>
+                  {category.categoryName}
+                </option>
+              ))}
             </select>
           </div>
           {loading ? (
