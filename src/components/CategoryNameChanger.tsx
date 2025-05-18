@@ -9,30 +9,73 @@ import {
 import { DropdownMenu, DropdownMenuTrigger } from './ui/dropdown-menu';
 import Image from 'next/image';
 import { useState } from 'react';
+import { fetchWithToken } from '@/utils/fetchWithToken';
+import { toast } from 'sonner';
 
 interface CategoryDropdownProps {
   categories: Category[];
-  selectedCategory?: Category | null;
+  onUpdate?: () => void; // 수정 후 목록 새로고침을 위한 콜백
 }
 
 export default function CategoryNameChanger({
   categories,
+  onUpdate,
 }: CategoryDropdownProps) {
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(
     null
   );
+  const [newCategoryName, setNewCategoryName] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleUpdate = async () => {
+    if (!selectedCategory) {
+      toast.error('수정할 카테고리를 선택해주세요');
+      return;
+    }
+
+    if (!newCategoryName.trim()) {
+      toast.error('새로운 카테고리 이름을 입력해주세요');
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const response = await fetchWithToken(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/category/${selectedCategory.category_id}`,
+        {
+          method: 'PUT',
+          body: JSON.stringify({ categoryName: newCategoryName }),
+        }
+      );
+
+      if (!response.ok) throw new Error('Failed to update category');
+
+      toast.success('카테고리 이름이 수정되었습니다');
+      setSelectedCategory(null);
+      setNewCategoryName('');
+      onUpdate?.(); // 목록 새로고침
+    } catch (error) {
+      console.error('Failed to update category:', error);
+      toast.error('카테고리 수정에 실패했습니다');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className='flex w-full gap-8'>
-      <div className='flex flex-col  gap-2'>
+      <div className='flex flex-col gap-2'>
         <DropdownMenu>
           <span className='inter-semibold'>변경할 카테고리</span>
-          <DropdownMenuTrigger className='  outline-0 w-[400px] border border-ml-gray-dark  text-black rounded-2xl flex'>
+          <DropdownMenuTrigger
+            className='outline-0 w-[400px] border border-ml-gray-dark text-black rounded-2xl flex'
+            disabled={loading}
+          >
             <span className='inter-regular w-full p-4 text-left'>
-              {selectedCategory?.category_name || 'Categories'}
+              {selectedCategory?.category_name || '카테고리 선택'}
             </span>
             <Image
-              src='DownArrow.svg'
+              src='/DownArrow.svg'
               alt='arrow-down'
               width={16}
               height={16}
@@ -44,7 +87,7 @@ export default function CategoryNameChanger({
             <DropdownMenuSeparator />
             {categories.map((category) => (
               <DropdownMenuItem
-                className='w-[400px] '
+                className='w-[400px]'
                 key={category.category_id}
                 onSelect={() => setSelectedCategory(category)}
               >
@@ -55,7 +98,7 @@ export default function CategoryNameChanger({
         </DropdownMenu>
       </div>
 
-      <div className='flex flex-col  gap-2'>
+      <div className='flex flex-col gap-2'>
         <label htmlFor='category-name' className='inter-semibold'>
           카테고리 이름 수정
         </label>
@@ -63,12 +106,21 @@ export default function CategoryNameChanger({
           <input
             id='category-name'
             type='text'
-            placeholder='카테고리 이름'
-            className='w-[400px] border border-ml-gray-dark rounded-2xl p-4 focus:outline-0 focus:border-ml-yellow'
+            value={newCategoryName}
+            onChange={(e) => setNewCategoryName(e.target.value)}
+            placeholder='새로운 카테고리 이름'
+            disabled={!selectedCategory || loading}
+            className='w-[400px] border border-ml-gray-dark rounded-2xl p-4 focus:outline-0 focus:border-ml-yellow disabled:opacity-50'
           />
-          <button className='flex items-center justify-center gap-2 rounded-2xl bg-ml-yellow text-white p-4 w-[200px]'>
-            <Image src='Submit.svg' alt='add' width={16} height={16} />
-            <span className='inter-regular '>이름 변경하기</span>
+          <button
+            onClick={handleUpdate}
+            disabled={!selectedCategory || !newCategoryName.trim() || loading}
+            className='flex items-center justify-center gap-2 rounded-2xl hover:cursor-pointer bg-ml-yellow text-white p-4 w-[200px] disabled:opacity-50'
+          >
+            <Image src='/Submit.svg' alt='add' width={16} height={16} />
+            <span className='inter-regular'>
+              {loading ? '처리중...' : '이름 변경하기'}
+            </span>
           </button>
         </div>
       </div>
