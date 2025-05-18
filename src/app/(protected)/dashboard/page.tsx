@@ -1,17 +1,48 @@
 'use client';
 
 import Image from 'next/image';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { fetchWithToken } from '@/utils/fetchWithToken';
+
+interface StoreInfo {
+  email: string;
+  adminName: string;
+  storeName: string;
+  kioskCount: number;
+}
 
 export default function Dashboard() {
   const [formData, setFormData] = useState({
-    email: 'youremail@example.com', // 초기값 설정
+    email: '',
     oldPassword: '',
     newPassword: '',
     storeName: '',
     adminName: '',
     tableCount: '',
   });
+
+  useEffect(() => {
+    const fetchStoreInfo = async () => {
+      try {
+        const response = await fetchWithToken(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/admin/store-info`
+        );
+
+        const data: StoreInfo = await response.json();
+        setFormData((prev) => ({
+          ...prev,
+          email: data.email,
+          adminName: data.adminName,
+          storeName: data.storeName,
+          tableCount: data.kioskCount.toString(),
+        }));
+      } catch (error) {
+        console.error('Error fetching store info:', error);
+      }
+    };
+
+    fetchStoreInfo();
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
@@ -21,27 +52,71 @@ export default function Dashboard() {
     }));
   };
 
-  const handleStoreNameSubmit = () => {
-    // TODO: API 요청 구현
-    console.log('Store name update:', formData.storeName);
+  const handleStoreNameSubmit = async () => {
+    try {
+      const response = await fetchWithToken(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/admin/store-name`,
+        {
+          method: 'PUT',
+          body: JSON.stringify({ storeName: formData.storeName }),
+        }
+      );
+      if (!response.ok) throw new Error('Failed to update store name');
+      console.log('Store name updated successfully');
+    } catch (error) {
+      console.error('Store name update failed:', error);
+    }
   };
 
-  const handleAdminNameSubmit = () => {
-    // TODO: API 요청 구현
-    console.log('Admin name update:', formData.adminName);
+  const handleAdminNameSubmit = async () => {
+    try {
+      const response = await fetchWithToken(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/admin/admin-name`,
+        {
+          method: 'PUT',
+          body: JSON.stringify({ adminName: formData.adminName }),
+        }
+      );
+      if (!response.ok) throw new Error('Failed to update admin name');
+      console.log('Admin name updated successfully');
+    } catch (error) {
+      console.error('Admin name update failed:', error);
+    }
   };
 
-  const handlePasswordChange = () => {
-    // TODO: API 요청 구현
-    console.log('Password update:', {
-      oldPassword: formData.oldPassword,
-      newPassword: formData.newPassword,
-    });
+  const handlePasswordChange = async () => {
+    try {
+      const response = await fetchWithToken(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/admin/password`,
+        {
+          method: 'PUT',
+          body: JSON.stringify({
+            oldPassword: formData.oldPassword,
+            newPassword: formData.newPassword,
+          }),
+        }
+      );
+      if (!response.ok) throw new Error('Failed to update password');
+      console.log('Password updated successfully');
+    } catch (error) {
+      console.error('Password update failed:', error);
+    }
   };
 
-  const handleTableCountSubmit = () => {
-    // TODO: API 요청 구현
-    console.log('Table count update:', formData.tableCount);
+  const handleTableCountSubmit = async () => {
+    try {
+      const response = await fetchWithToken(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/admin/table-count`,
+        {
+          method: 'PUT',
+          body: JSON.stringify({ tableCount: formData.tableCount }),
+        }
+      );
+      if (!response.ok) throw new Error('Failed to update table count');
+      console.log('Table count updated successfully');
+    } catch (error) {
+      console.error('Table count update failed:', error);
+    }
   };
 
   return (
