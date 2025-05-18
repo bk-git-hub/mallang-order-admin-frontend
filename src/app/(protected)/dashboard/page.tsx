@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import { fetchWithToken } from '@/utils/fetchWithToken';
+import { toast } from 'sonner';
 
 interface StoreInfo {
   email: string;
@@ -21,26 +22,26 @@ export default function Dashboard() {
     tableCount: '',
   });
 
+  const fetchStoreInfo = async () => {
+    try {
+      const response = await fetchWithToken(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/admin/store-info`
+      );
+
+      const data: StoreInfo = await response.json();
+      setFormData((prev) => ({
+        ...prev,
+        email: data.email,
+        adminName: data.adminName,
+        storeName: data.storeName,
+        tableCount: data.kioskCount.toString(),
+      }));
+    } catch (error) {
+      console.error('Error fetching store info:', error);
+    }
+  };
+
   useEffect(() => {
-    const fetchStoreInfo = async () => {
-      try {
-        const response = await fetchWithToken(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/admin/store-info`
-        );
-
-        const data: StoreInfo = await response.json();
-        setFormData((prev) => ({
-          ...prev,
-          email: data.email,
-          adminName: data.adminName,
-          storeName: data.storeName,
-          tableCount: data.kioskCount.toString(),
-        }));
-      } catch (error) {
-        console.error('Error fetching store info:', error);
-      }
-    };
-
     fetchStoreInfo();
   }, []);
 
@@ -55,41 +56,45 @@ export default function Dashboard() {
   const handleStoreNameSubmit = async () => {
     try {
       const response = await fetchWithToken(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/admin/store-name`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/admin/change-store-name`,
         {
-          method: 'PUT',
-          body: JSON.stringify({ storeName: formData.storeName }),
+          method: 'PATCH',
+          body: JSON.stringify({ newName: formData.storeName }),
         }
       );
       if (!response.ok) throw new Error('Failed to update store name');
-      console.log('Store name updated successfully');
+      toast('가게 이름 변경 완료');
+      await fetchStoreInfo(); // 정보 새로고침
     } catch (error) {
       console.error('Store name update failed:', error);
+      toast.error('가게 이름 변경 실패');
     }
   };
 
   const handleAdminNameSubmit = async () => {
     try {
       const response = await fetchWithToken(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/admin/admin-name`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/admin/change-admin-name`,
         {
-          method: 'PUT',
-          body: JSON.stringify({ adminName: formData.adminName }),
+          method: 'PATCH',
+          body: JSON.stringify({ newName: formData.adminName }),
         }
       );
       if (!response.ok) throw new Error('Failed to update admin name');
-      console.log('Admin name updated successfully');
+      toast('사장님 이름 변경 완료');
+      await fetchStoreInfo(); // 정보 새로고침
     } catch (error) {
       console.error('Admin name update failed:', error);
+      toast.error('사장님 이름 변경 실패');
     }
   };
 
   const handlePasswordChange = async () => {
     try {
       const response = await fetchWithToken(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/admin/password`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/admin/change-password`,
         {
-          method: 'PUT',
+          method: 'PATCH',
           body: JSON.stringify({
             oldPassword: formData.oldPassword,
             newPassword: formData.newPassword,
@@ -97,25 +102,33 @@ export default function Dashboard() {
         }
       );
       if (!response.ok) throw new Error('Failed to update password');
-      console.log('Password updated successfully');
+      toast('비밀번호 변경 완료');
+      setFormData((prev) => ({
+        ...prev,
+        oldPassword: '',
+        newPassword: '',
+      }));
     } catch (error) {
       console.error('Password update failed:', error);
+      toast.error('비밀번호 변경 실패');
     }
   };
 
   const handleTableCountSubmit = async () => {
     try {
       const response = await fetchWithToken(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/admin/table-count`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/kiosk/set`,
         {
-          method: 'PUT',
-          body: JSON.stringify({ tableCount: formData.tableCount }),
+          method: 'POST',
+          body: JSON.stringify({ count: formData.tableCount }),
         }
       );
       if (!response.ok) throw new Error('Failed to update table count');
-      console.log('Table count updated successfully');
+      toast('테이블 수 설정 완료');
+      await fetchStoreInfo(); // 정보 새로고침
     } catch (error) {
       console.error('Table count update failed:', error);
+      toast.error('테이블 수 설정 실패');
     }
   };
 
@@ -168,7 +181,7 @@ export default function Dashboard() {
               />
               <button
                 onClick={handleStoreNameSubmit}
-                className='flex items-center justify-center gap-2 rounded-2xl bg-ml-yellow text-white p-4 w-[200px]'
+                className='flex items-center justify-center gap-2 rounded-2xl hover:cursor-pointer bg-ml-yellow text-white p-4 w-[200px]'
               >
                 <Image src='Submit.svg' alt='add' width={16} height={16} />
                 <span className='inter-regular '>가게 이름 변경</span>
@@ -204,7 +217,7 @@ export default function Dashboard() {
                 />
                 <button
                   onClick={handleAdminNameSubmit}
-                  className='flex items-center justify-center gap-2 rounded-2xl bg-ml-yellow text-white p-4 w-[200px]'
+                  className='flex items-center justify-center gap-2 rounded-2xl hover:cursor-pointer bg-ml-yellow text-white p-4 w-[200px]'
                 >
                   <Image src='Submit.svg' alt='add' width={16} height={16} />
                   <span className='inter-regular '>사장님 이름 변경</span>
@@ -213,7 +226,7 @@ export default function Dashboard() {
 
               <button
                 onClick={handlePasswordChange}
-                className='flex items-center justify-center gap-2 rounded-2xl bg-ml-yellow text-white p-4 w-[200px] mr-20'
+                className='flex items-center justify-center gap-2 rounded-2xl hover:cursor-pointer bg-ml-yellow text-white p-4 w-[200px] mr-20'
               >
                 <Image src='Submit.svg' alt='add' width={16} height={16} />
                 <span className='inter-regular '>비밀번호 변경</span>
@@ -236,7 +249,7 @@ export default function Dashboard() {
               />
               <button
                 onClick={handleTableCountSubmit}
-                className='flex items-center justify-center gap-2 rounded-2xl bg-ml-yellow text-white p-4 w-[200px]'
+                className='flex items-center justify-center gap-2 rounded-2xl hover:cursor-pointer bg-ml-yellow text-white p-4 w-[200px]'
               >
                 <Image src='Submit.svg' alt='add' width={16} height={16} />
                 <span className='inter-regular '>테이블 수 등록</span>
