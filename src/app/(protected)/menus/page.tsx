@@ -8,6 +8,7 @@ import { toast } from 'sonner';
 interface Menu {
   menuId: number;
   menuName: string;
+  menuNameEn: string;
   menuPrice: number;
   imageUrl?: string;
   adminId: number;
@@ -32,6 +33,7 @@ export default function Menus() {
 
   // Form states
   const [menuName, setMenuName] = useState('');
+  const [menuNameEn, setMenuNameEn] = useState('');
   const [menuPrice, setMenuPrice] = useState('');
   const [menuCategory, setMenuCategory] = useState('');
   const [menuImage, setMenuImage] = useState<File | null>(null);
@@ -79,7 +81,7 @@ export default function Menus() {
 
   const handleAddMenu = async (e: FormEvent) => {
     e.preventDefault();
-    if (!menuName || !menuPrice || !menuCategory || !menuImage) {
+    if (!menuName || !menuNameEn || !menuPrice || !menuCategory || !menuImage) {
       toast.error('모든 필드를 입력해주세요');
       return;
     }
@@ -87,6 +89,7 @@ export default function Menus() {
     setSubmitting(true);
     const formData = new FormData();
     formData.append('menuName', menuName);
+    formData.append('menuNameEn', menuNameEn);
     formData.append('menuPrice', menuPrice);
     formData.append('categoryIds', menuCategory);
     formData.append('image', menuImage);
@@ -97,7 +100,6 @@ export default function Menus() {
         {
           method: 'POST',
           body: formData,
-          // Don't set Content-Type header, browser will set it with boundary
         }
       );
 
@@ -105,6 +107,7 @@ export default function Menus() {
 
       toast.success('메뉴가 추가되었습니다');
       setMenuName('');
+      setMenuNameEn('');
       setMenuPrice('');
       setMenuImage(null);
       fetchMenus();
@@ -123,6 +126,7 @@ export default function Menus() {
     setSubmitting(true);
     const formData = new FormData();
     formData.append('menuName', selectedMenu.menuName);
+    formData.append('menuNameEn', selectedMenu.menuNameEn);
     formData.append('menuPrice', selectedMenu.menuPrice.toString());
     formData.append(
       'categoryIds',
@@ -203,17 +207,32 @@ export default function Menus() {
             <div className='flex gap-8'>
               <div className='flex flex-col gap-2 flex-1'>
                 <label htmlFor='menu-name' className='inter-semibold'>
-                  메뉴 이름
+                  메뉴 이름 (한글)
                 </label>
                 <input
                   id='menu-name'
                   type='text'
                   value={menuName}
                   onChange={(e) => setMenuName(e.target.value)}
-                  placeholder='메뉴 이름'
+                  placeholder='메뉴 이름 (한글)'
                   className='border border-ml-gray-dark rounded-2xl p-4 focus:outline-0 focus:border-ml-yellow'
                 />
               </div>
+              <div className='flex flex-col gap-2 flex-1'>
+                <label htmlFor='menu-name-en' className='inter-semibold'>
+                  메뉴 이름 (영문)
+                </label>
+                <input
+                  id='menu-name-en'
+                  type='text'
+                  value={menuNameEn}
+                  onChange={(e) => setMenuNameEn(e.target.value)}
+                  placeholder='메뉴 이름 (영문)'
+                  className='border border-ml-gray-dark rounded-2xl p-4 focus:outline-0 focus:border-ml-yellow'
+                />
+              </div>
+            </div>
+            <div className='flex gap-8'>
               <div className='flex flex-col gap-2 flex-1'>
                 <label htmlFor='menu-price' className='inter-semibold'>
                   가격
@@ -310,6 +329,7 @@ export default function Menus() {
                     </div>
                   )}
                   <h4 className='text-lg font-semibold'>{menu.menuName}</h4>
+                  <p className='text-sm text-gray-600'>{menu.menuNameEn}</p>
                   <p className='font-semibold'>
                     {menu.menuPrice.toLocaleString()}원
                   </p>
@@ -350,7 +370,7 @@ export default function Menus() {
               <div className='flex flex-col gap-4'>
                 <div className='flex gap-8'>
                   <div className='flex flex-col gap-2 flex-1'>
-                    <label className='inter-semibold'>메뉴 이름</label>
+                    <label className='inter-semibold'>메뉴 이름 (한글)</label>
                     <input
                       type='text'
                       value={selectedMenu.menuName}
@@ -363,6 +383,22 @@ export default function Menus() {
                       className='border border-ml-gray-dark rounded-2xl p-4 focus:outline-0 focus:border-ml-yellow'
                     />
                   </div>
+                  <div className='flex flex-col gap-2 flex-1'>
+                    <label className='inter-semibold'>메뉴 이름 (영문)</label>
+                    <input
+                      type='text'
+                      value={selectedMenu.menuNameEn}
+                      onChange={(e) =>
+                        setSelectedMenu({
+                          ...selectedMenu,
+                          menuNameEn: e.target.value,
+                        })
+                      }
+                      className='border border-ml-gray-dark rounded-2xl p-4 focus:outline-0 focus:border-ml-yellow'
+                    />
+                  </div>
+                </div>
+                <div className='flex gap-8'>
                   <div className='flex flex-col gap-2 flex-1'>
                     <label className='inter-semibold'>가격</label>
                     <input
@@ -377,39 +413,39 @@ export default function Menus() {
                       className='border border-ml-gray-dark rounded-2xl p-4 focus:outline-0 focus:border-ml-yellow'
                     />
                   </div>
-                </div>
-                <div className='flex flex-col gap-2'>
-                  <label className='inter-semibold'>카테고리</label>
-                  <select
-                    value={selectedMenu.categories[0]?.categoryId}
-                    onChange={(e) =>
-                      setSelectedMenu({
-                        ...selectedMenu,
-                        categories: [
-                          {
-                            categoryId: Number(e.target.value),
-                            categoryName:
-                              categories.find(
-                                (cat) =>
-                                  cat.categoryId === Number(e.target.value)
-                              )?.categoryName || '',
-                          },
-                        ],
-                      })
-                    }
-                    className='border border-ml-gray-dark rounded-2xl p-4 focus:outline-0 focus:border-ml-yellow'
-                  >
-                    {categories
-                      .filter((cat) => cat.categoryName !== 'Default')
-                      .map((category) => (
-                        <option
-                          key={category.categoryId}
-                          value={category.categoryId}
-                        >
-                          {category.categoryName}
-                        </option>
-                      ))}
-                  </select>
+                  <div className='flex flex-col gap-2 flex-1'>
+                    <label className='inter-semibold'>카테고리</label>
+                    <select
+                      value={selectedMenu.categories[0]?.categoryId}
+                      onChange={(e) =>
+                        setSelectedMenu({
+                          ...selectedMenu,
+                          categories: [
+                            {
+                              categoryId: Number(e.target.value),
+                              categoryName:
+                                categories.find(
+                                  (cat) =>
+                                    cat.categoryId === Number(e.target.value)
+                                )?.categoryName || '',
+                            },
+                          ],
+                        })
+                      }
+                      className='border border-ml-gray-dark rounded-2xl p-4 focus:outline-0 focus:border-ml-yellow'
+                    >
+                      {categories
+                        .filter((cat) => cat.categoryName !== 'Default')
+                        .map((category) => (
+                          <option
+                            key={category.categoryId}
+                            value={category.categoryId}
+                          >
+                            {category.categoryName}
+                          </option>
+                        ))}
+                    </select>
+                  </div>
                 </div>
                 <div className='flex flex-col gap-2'>
                   <label className='inter-semibold'>메뉴 이미지</label>
