@@ -11,6 +11,7 @@ import { toast } from 'sonner';
 const signUpSchema = z.object({
   name: z.string().min(1, '이름을 입력해주세요'),
   storeName: z.string().min(1, 'Store name is required'),
+  storeNameEn: z.string().min(1, 'English store name is required'),
   email: z.string().min(1, 'Email is required').email('Invalid email address'),
   password: z.string().min(8, 'Password must be at least 8 characters'),
 });
@@ -36,6 +37,7 @@ export default function SignUp() {
 
   const email = watch('email');
   const storeName = watch('storeName');
+  const storeNameEn = watch('storeNameEn');
   const name = watch('name');
 
   const handleEmailVerification = async () => {
@@ -50,16 +52,17 @@ export default function SignUp() {
           body: JSON.stringify({ email }),
         }
       );
+      const data = await response.json();
 
       if (!response.ok) {
-        throw new Error('이메일 인증번호 발송에 실패했습니다.');
+        throw new Error(data.message || '이메일 인증번호 발송에 실패했습니다.');
       }
 
       setShowVerificationInput(true);
       toast('인증번호가 전송되었습니다');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Email verification failed:', error);
-      toast('이메일 인증번호 발송에 실패했습니다');
+      toast(error.message || '이메일 인증번호 발송에 실패했습니다');
     }
   };
 
@@ -88,7 +91,7 @@ export default function SignUp() {
       toast('이메일 인증에 성공했습니다.');
     } catch (error) {
       console.error('Code verification failed:', error);
-      toast('인증번호 확인에 실패했습니다');
+      toast.error('인증번호 확인에 실패했습니다');
     }
   };
 
@@ -102,20 +105,23 @@ export default function SignUp() {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            adminName: storeName,
+            storeName: storeName,
+            storeNameEn: storeNameEn,
           }),
         }
       );
 
+      const data = await response.json();
+
       if (!response.ok) {
-        throw new Error('이미 사용중인 가게 이름입니다.');
+        throw new Error(data.message || '이미 사용중인 가게 이름입니다.');
       }
 
       setIsStoreNameChecked(true);
       toast('사용 가능한 가게 이름입니다.');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Store name check failed:', error);
-      toast('가게 이름 중복 확인에 실패했습니다.');
+      toast.error(error.message || '가게 이름 중복 확인에 실패했습니다.');
     }
   };
 
@@ -146,6 +152,7 @@ export default function SignUp() {
             password: data.password,
             adminName: data.name,
             storeName: data.storeName,
+            storeNameEn: data.storeNameEn,
           }),
         }
       );
@@ -187,7 +194,7 @@ export default function SignUp() {
                   id='name'
                   type='text'
                   {...register('name')}
-                  className={`appearance-none rounded-[8px] relative block w-full px-3 py-2 border ${
+                  className={`appearance-none rounded-[8px] relative h-[46px] block w-full px-3 py-2 border ${
                     errors.name ? 'border-red-300' : 'border-gray-300'
                   } placeholder-gray-500 text-gray-900 focus:outline-none focus:border-ml-yellow focus:z-10 sm:text-sm`}
                   placeholder='김말랑'
@@ -208,32 +215,54 @@ export default function SignUp() {
                 </p>
               )}
             </div>
-            <div className='relative h-20'>
-              <label htmlFor='storeName'>Store Name</label>
-              <div className='flex gap-3'>
-                <input
-                  id='storeName'
-                  type='text'
-                  {...register('storeName')}
-                  className={`appearance-none rounded-[8px] relative block w-[265px] px-3 py-2 border ${
-                    errors.storeName ? 'border-red-300' : 'border-gray-300'
-                  } placeholder-gray-500 text-gray-900 focus:outline-none focus:border-ml-yellow focus:z-10 sm:text-sm`}
-                  placeholder='Store Name'
-                />
-                <button
-                  type='button'
-                  onClick={handleStoreNameCheck}
-                  disabled={!storeName || isStoreNameChecked}
-                  className='border flex-1 border-ml-yellow rounded-[8px] px-2 py-2.5 font-normal text-ml-yellow bg-white focus:outline-none focus:ring-2 focus:ring-offset-2  disabled:opacity-50 disabled:cursor-not-allowed'
-                >
-                  {isStoreNameChecked ? '확인완료' : '중복확인'}
-                </button>
+            <div className='flex gap-3 items-center'>
+              <div className='flex flex-col'>
+                <div className='relative h-20'>
+                  <label htmlFor='storeName'>Store Name (Korean)</label>
+
+                  <input
+                    id='storeName'
+                    type='text'
+                    {...register('storeName')}
+                    className={`appearance-none rounded-[8px] relative block w-[265px] h-[46px] px-3 py-2 border ${
+                      errors.storeName ? 'border-red-300' : 'border-gray-300'
+                    } placeholder-gray-500 text-gray-900 focus:outline-none focus:border-ml-yellow focus:z-10 sm:text-sm`}
+                    placeholder='Store Name (Korean)'
+                  />
+
+                  {errors.storeName && (
+                    <p className='absolute bottom-0 text-sm text-red-600'>
+                      {errors.storeName.message}
+                    </p>
+                  )}
+                </div>
+                <div className='relative h-20'>
+                  <label htmlFor='storeNameEn'>Store Name (English)</label>
+                  <input
+                    id='storeNameEn'
+                    type='text'
+                    {...register('storeNameEn')}
+                    className={`appearance-none rounded-[8px] relative block w-[265px] h-[46px] px-3 py-2 border ${
+                      errors.storeNameEn ? 'border-red-300' : 'border-gray-300'
+                    } placeholder-gray-500 text-gray-900 focus:outline-none focus:border-ml-yellow focus:z-10 sm:text-sm`}
+                    placeholder='Store Name (English)'
+                  />
+                  {errors.storeNameEn && (
+                    <p className='absolute bottom-0 text-sm text-red-600'>
+                      {errors.storeNameEn.message}
+                    </p>
+                  )}
+                </div>
               </div>
-              {errors.storeName && (
-                <p className='absolute bottom-0 text-sm text-red-600'>
-                  {errors.storeName.message}
-                </p>
-              )}
+
+              <button
+                type='button'
+                onClick={handleStoreNameCheck}
+                disabled={!storeName || !storeNameEn || isStoreNameChecked}
+                className='border flex-1 hover:cursor-pointer border-ml-yellow rounded-[8px] h-[46px] px-2 py-2.5 font-normal text-ml-yellow bg-white focus:outline-none focus:ring-2 focus:ring-offset-2  disabled:opacity-50 disabled:cursor-not-allowed'
+              >
+                {isStoreNameChecked ? '확인완료' : '중복확인'}
+              </button>
             </div>
             <div className='relative h-20'>
               <label htmlFor='email'>Email</label>
@@ -252,7 +281,7 @@ export default function SignUp() {
                   type='button'
                   onClick={handleEmailVerification}
                   disabled={!email || isEmailVerified}
-                  className='border border-ml-yellow rounded-[8px] px-2 py-2.5 font-normal text-ml-yellow bg-white focus:outline-none focus:ring-2 focus:ring-offset-2  disabled:opacity-50 disabled:cursor-not-allowed flex-1'
+                  className='hover:cursor-pointer border border-ml-yellow rounded-[8px] px-2 py-2.5 font-normal text-ml-yellow bg-white focus:outline-none focus:ring-2 focus:ring-offset-2  disabled:opacity-50 disabled:cursor-not-allowed flex-1'
                 >
                   {isEmailVerified ? '인증완료' : '인증하기'}
                 </button>
@@ -279,7 +308,7 @@ export default function SignUp() {
                   type='button'
                   onClick={handleVerifyCode}
                   disabled={!showVerificationInput}
-                  className='border border-ml-yellow rounded-[8px] px-2 py-2.5 font-normal flex-1 text-ml-yellow bg-white focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed'
+                  className='hover:cursor-pointer border border-ml-yellow rounded-[8px] px-2 py-2.5 font-normal flex-1 text-ml-yellow bg-white focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed'
                 >
                   확인
                 </button>
@@ -292,7 +321,7 @@ export default function SignUp() {
                 type='password'
                 autoComplete='new-password'
                 {...register('password')}
-                className={`appearance-none rounded-[8px] relative block w-full px-3 py-2 border ${
+                className={`appearance-none h-[46px] rounded-[8px] relative block w-full px-3 py-2 border ${
                   errors.password ? 'border-red-300' : 'border-gray-300'
                 } placeholder-gray-500 text-gray-900 focus:outline-none focus:border-ml-yellow focus:z-10 sm:text-sm`}
                 placeholder='영문, 숫자, 하나 이상의 특수문자를 포함하는 8 ~ 16자'
@@ -309,7 +338,7 @@ export default function SignUp() {
             <button
               type='submit'
               disabled={isSubmitting}
-              className='mt-[18px] group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-ml-yellow focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed'
+              className='hover:cursor-pointer mt-[18px] group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-ml-yellow focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed'
             >
               {isSubmitting ? 'Signing up...' : 'Sign up'}
             </button>
