@@ -12,7 +12,7 @@ import { useState } from 'react';
 import { fetchWithToken } from '@/utils/fetchWithToken';
 import { toast } from 'sonner';
 
-interface CategoryDropdownProps {
+interface CategoryDeleterProps {
   categories: Category[];
   onDelete?: () => void; // 삭제 후 목록 새로고침을 위한 콜백
 }
@@ -20,11 +20,16 @@ interface CategoryDropdownProps {
 export default function CategoryDeleter({
   categories,
   onDelete,
-}: CategoryDropdownProps) {
+}: CategoryDeleterProps) {
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(
     null
   );
   const [loading, setLoading] = useState(false);
+
+  // "전체" 카테고리를 제외한 카테고리 목록
+  const filteredCategories = categories.filter(
+    (cat) => cat.category_name !== '전체'
+  );
 
   const handleDelete = async () => {
     if (!selectedCategory) {
@@ -59,47 +64,65 @@ export default function CategoryDeleter({
       <div className='flex flex-col gap-2'>
         <DropdownMenu>
           <span className='inter-semibold'>삭제할 카테고리</span>
-          <div className='flex gap-8 w-full'>
-            <DropdownMenuTrigger
-              className='outline-0 w-[400px] border border-ml-gray-dark text-black rounded-2xl flex'
-              disabled={loading}
-            >
-              <span className='inter-regular w-full p-4 text-left'>
-                {selectedCategory?.category_name || '카테고리 선택'}
+          <DropdownMenuTrigger
+            className='outline-0 w-[400px] border border-ml-gray-dark text-black rounded-2xl flex disabled:opacity-50'
+            disabled={loading || filteredCategories.length === 0}
+          >
+            {filteredCategories.length === 0 ? (
+              <span className='inter-regular p-4'>
+                생성된 카테고리가 없습니다
               </span>
-              <Image
-                src='/DownArrow.svg'
-                alt='arrow-down'
-                width={16}
-                height={16}
-                className='mx-4'
-              />
-            </DropdownMenuTrigger>
-            <button
-              onClick={handleDelete}
-              disabled={!selectedCategory || loading}
-              className='flex items-center justify-center gap-2 rounded-2xl hover:cursor-pointer bg-ml-yellow text-white p-4 w-[200px] disabled:opacity-50'
-            >
-              <Image src='/Submit.svg' alt='add' width={16} height={16} />
-              <span className='inter-regular'>
-                {loading ? '처리중...' : '카테고리 삭제'}
-              </span>
-            </button>
-          </div>
+            ) : (
+              <>
+                <span className='inter-regular w-full p-4 text-left'>
+                  {selectedCategory
+                    ? `${selectedCategory.category_name} (${selectedCategory.category_name_en})`
+                    : '카테고리 선택'}
+                </span>
+                <Image
+                  src='/DownArrow.svg'
+                  alt='arrow-down'
+                  width={16}
+                  height={16}
+                  className='mx-4'
+                />
+              </>
+            )}
+          </DropdownMenuTrigger>
 
           <DropdownMenuContent className='w-[400px] left-0'>
             <DropdownMenuSeparator />
-            {categories.map((category) => (
-              <DropdownMenuItem
-                className='w-[400px]'
-                key={category.category_id}
-                onSelect={() => setSelectedCategory(category)}
-              >
-                {category.category_name}
-              </DropdownMenuItem>
-            ))}
+            {filteredCategories.length === 0 ? (
+              <div className='p-4 text-center text-gray-500'>
+                생성된 카테고리가 없습니다
+              </div>
+            ) : (
+              filteredCategories.map((category) => (
+                <DropdownMenuItem
+                  className='w-[400px]'
+                  key={category.category_id}
+                  onSelect={() => setSelectedCategory(category)}
+                >
+                  {`${category.category_name} (${category.category_name_en})`}
+                </DropdownMenuItem>
+              ))
+            )}
           </DropdownMenuContent>
         </DropdownMenu>
+      </div>
+
+      <div className='flex flex-col gap-2'>
+        <span className='inter-semibold'>카테고리 삭제</span>
+        <button
+          onClick={handleDelete}
+          disabled={!selectedCategory || loading}
+          className='flex items-center justify-center gap-2 rounded-2xl hover:cursor-pointer bg-red-500 text-white p-4 w-[200px] disabled:opacity-50'
+        >
+          <Image src='/Submit.svg' alt='delete' width={16} height={16} />
+          <span className='inter-regular'>
+            {loading ? '처리중...' : '삭제하기'}
+          </span>
+        </button>
       </div>
     </div>
   );

@@ -11,6 +11,7 @@ import { Category as ComponentCategory } from '@/types/Category';
 interface APICategory {
   categoryId: number;
   categoryName: string;
+  categoryNameEn: string;
   adminId: number;
   menus: any[];
 }
@@ -18,6 +19,7 @@ interface APICategory {
 export default function Categories() {
   const [categories, setCategories] = useState<APICategory[]>([]);
   const [newCategoryName, setNewCategoryName] = useState('');
+  const [newCategoryNameEn, setNewCategoryNameEn] = useState('');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -58,11 +60,15 @@ export default function Categories() {
       .map((cat) => ({
         category_id: cat.categoryId.toString(),
         category_name: cat.categoryName,
+        category_name_en: cat.categoryNameEn,
       }));
   };
 
   const handleAddCategory = async () => {
-    if (!newCategoryName.trim()) return;
+    if (!newCategoryName.trim() || !newCategoryNameEn.trim()) {
+      toast.error('카테고리 이름을 모두 입력해주세요');
+      return;
+    }
 
     try {
       const response = await fetchWithToken(
@@ -72,7 +78,10 @@ export default function Categories() {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ categoryName: newCategoryName }),
+          body: JSON.stringify({
+            categoryName: newCategoryName,
+            categoryNameEn: newCategoryNameEn,
+          }),
         }
       );
 
@@ -80,6 +89,7 @@ export default function Categories() {
 
       toast.success('카테고리가 추가되었습니다');
       setNewCategoryName('');
+      setNewCategoryNameEn('');
       fetchCategories(); // 목록 새로고침
     } catch (error: any) {
       console.error('Failed to add category:', error);
@@ -103,25 +113,39 @@ export default function Categories() {
               <label htmlFor='category-name' className='inter-semibold'>
                 카테고리 이름
               </label>
-              <div className='flex gap-8 w-full'>
+              <div className='flex flex-col gap-4 w-full'>
                 <input
                   id='category-name'
                   type='text'
                   value={newCategoryName}
                   onChange={(e) => setNewCategoryName(e.target.value)}
-                  placeholder='카테고리 이름'
+                  placeholder='카테고리 이름 (한글)'
                   className='w-[400px] border border-ml-gray-dark rounded-2xl p-4 focus:outline-0 focus:border-ml-yellow'
                 />
-                <button
-                  onClick={handleAddCategory}
-                  disabled={!newCategoryName.trim() || loading}
-                  className='flex items-center justify-center gap-2 rounded-2xl hover:cursor-pointer bg-ml-yellow text-white p-4 w-[200px] disabled:opacity-50'
-                >
-                  <Image src='/Submit.svg' alt='add' width={16} height={16} />
-                  <span className='inter-regular'>
-                    {loading ? '처리중...' : '카테고리 추가'}
-                  </span>
-                </button>
+                <div className='flex gap-8'>
+                  <input
+                    id='category-name-en'
+                    type='text'
+                    value={newCategoryNameEn}
+                    onChange={(e) => setNewCategoryNameEn(e.target.value)}
+                    placeholder='카테고리 이름 (영문)'
+                    className='w-[400px] border border-ml-gray-dark rounded-2xl p-4 focus:outline-0 focus:border-ml-yellow'
+                  />
+                  <button
+                    onClick={handleAddCategory}
+                    disabled={
+                      !newCategoryName.trim() ||
+                      !newCategoryNameEn.trim() ||
+                      loading
+                    }
+                    className='flex items-center justify-center gap-2 rounded-2xl hover:cursor-pointer bg-ml-yellow text-white p-4 w-[200px] disabled:opacity-50'
+                  >
+                    <Image src='/Submit.svg' alt='add' width={16} height={16} />
+                    <span className='inter-regular'>
+                      {loading ? '처리중...' : '카테고리 추가'}
+                    </span>
+                  </button>
+                </div>
               </div>
             </div>
           </div>

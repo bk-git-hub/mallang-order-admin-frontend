@@ -25,7 +25,13 @@ export default function CategoryNameChanger({
     null
   );
   const [newCategoryName, setNewCategoryName] = useState('');
+  const [newCategoryNameEn, setNewCategoryNameEn] = useState('');
   const [loading, setLoading] = useState(false);
+
+  // "전체" 카테고리를 제외한 카테고리 목록
+  const filteredCategories = categories.filter(
+    (cat) => cat.category_name !== '전체'
+  );
 
   const handleUpdate = async () => {
     if (!selectedCategory) {
@@ -33,8 +39,8 @@ export default function CategoryNameChanger({
       return;
     }
 
-    if (!newCategoryName.trim()) {
-      toast.error('새로운 카테고리 이름을 입력해주세요');
+    if (!newCategoryName.trim() || !newCategoryNameEn.trim()) {
+      toast.error('새로운 카테고리 이름을 모두 입력해주세요');
       return;
     }
 
@@ -47,7 +53,10 @@ export default function CategoryNameChanger({
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ categoryName: newCategoryName }),
+          body: JSON.stringify({
+            categoryName: newCategoryName,
+            categoryNameEn: newCategoryNameEn,
+          }),
         }
       );
 
@@ -56,6 +65,7 @@ export default function CategoryNameChanger({
       toast.success('카테고리 이름이 수정되었습니다');
       setSelectedCategory(null);
       setNewCategoryName('');
+      setNewCategoryNameEn('');
       onUpdate?.(); // 목록 새로고침
     } catch (error) {
       console.error('Failed to update category:', error);
@@ -71,32 +81,52 @@ export default function CategoryNameChanger({
         <DropdownMenu>
           <span className='inter-semibold'>변경할 카테고리</span>
           <DropdownMenuTrigger
-            className='outline-0 w-[400px] border border-ml-gray-dark text-black rounded-2xl flex'
-            disabled={loading}
+            className='outline-0 w-[400px] border border-ml-gray-dark text-black rounded-2xl flex disabled:opacity-50'
+            disabled={loading || filteredCategories.length === 0}
           >
-            <span className='inter-regular w-full p-4 text-left'>
-              {selectedCategory?.category_name || '카테고리 선택'}
-            </span>
-            <Image
-              src='/DownArrow.svg'
-              alt='arrow-down'
-              width={16}
-              height={16}
-              className='mx-4'
-            />
+            {filteredCategories.length === 0 ? (
+              <span className='inter-regular p-4'>
+                생성된 카테고리가 없습니다
+              </span>
+            ) : (
+              <>
+                <span className='inter-regular w-full p-4 text-left'>
+                  {selectedCategory
+                    ? `${selectedCategory.category_name} (${selectedCategory.category_name_en})`
+                    : '카테고리 선택'}
+                </span>
+                <Image
+                  src='/DownArrow.svg'
+                  alt='arrow-down'
+                  width={16}
+                  height={16}
+                  className='mx-4'
+                />
+              </>
+            )}
           </DropdownMenuTrigger>
 
           <DropdownMenuContent className='w-[400px] left-0'>
             <DropdownMenuSeparator />
-            {categories.map((category) => (
-              <DropdownMenuItem
-                className='w-[400px]'
-                key={category.category_id}
-                onSelect={() => setSelectedCategory(category)}
-              >
-                {category.category_name}
-              </DropdownMenuItem>
-            ))}
+            {filteredCategories.length === 0 ? (
+              <div className='p-4 text-center text-gray-500'>
+                생성된 카테고리가 없습니다
+              </div>
+            ) : (
+              filteredCategories.map((category) => (
+                <DropdownMenuItem
+                  className='w-[400px]'
+                  key={category.category_id}
+                  onSelect={() => {
+                    setSelectedCategory(category);
+                    setNewCategoryName(category.category_name);
+                    setNewCategoryNameEn(category.category_name_en);
+                  }}
+                >
+                  {`${category.category_name} (${category.category_name_en})`}
+                </DropdownMenuItem>
+              ))
+            )}
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
@@ -105,19 +135,33 @@ export default function CategoryNameChanger({
         <label htmlFor='category-name' className='inter-semibold'>
           카테고리 이름 수정
         </label>
-        <div className='flex gap-8 w-full'>
+        <div className='flex flex-col gap-4 w-full'>
           <input
             id='category-name'
             type='text'
             value={newCategoryName}
             onChange={(e) => setNewCategoryName(e.target.value)}
-            placeholder='새로운 카테고리 이름'
+            placeholder='새로운 카테고리 이름 (한글)'
+            disabled={!selectedCategory || loading}
+            className='w-[400px] border border-ml-gray-dark rounded-2xl p-4 focus:outline-0 focus:border-ml-yellow disabled:opacity-50'
+          />
+          <input
+            id='category-name-en'
+            type='text'
+            value={newCategoryNameEn}
+            onChange={(e) => setNewCategoryNameEn(e.target.value)}
+            placeholder='새로운 카테고리 이름 (영문)'
             disabled={!selectedCategory || loading}
             className='w-[400px] border border-ml-gray-dark rounded-2xl p-4 focus:outline-0 focus:border-ml-yellow disabled:opacity-50'
           />
           <button
             onClick={handleUpdate}
-            disabled={!selectedCategory || !newCategoryName.trim() || loading}
+            disabled={
+              !selectedCategory ||
+              !newCategoryName.trim() ||
+              !newCategoryNameEn.trim() ||
+              loading
+            }
             className='flex items-center justify-center gap-2 rounded-2xl hover:cursor-pointer bg-ml-yellow text-white p-4 w-[200px] disabled:opacity-50'
           >
             <Image src='/Submit.svg' alt='add' width={16} height={16} />
