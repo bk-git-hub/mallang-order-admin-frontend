@@ -9,6 +9,7 @@ interface StoreInfo {
   email: string;
   adminName: string;
   storeName: string;
+  storeNameEn: string;
   kioskCount: number;
 }
 
@@ -18,6 +19,7 @@ export default function Dashboard() {
     oldPassword: '',
     newPassword: '',
     storeName: '',
+    storeNameEn: '',
     adminName: '',
     tableCount: '',
   });
@@ -34,6 +36,7 @@ export default function Dashboard() {
         email: data.email,
         adminName: data.adminName,
         storeName: data.storeName,
+        storeNameEn: data.storeNameEn,
         tableCount: data.kioskCount.toString(),
       }));
     } catch (error) {
@@ -59,7 +62,13 @@ export default function Dashboard() {
         `${process.env.NEXT_PUBLIC_API_URL}/api/admin/change-store-name`,
         {
           method: 'PATCH',
-          body: JSON.stringify({ newName: formData.storeName }),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            newName: formData.storeName,
+            newNameEn: formData.storeNameEn,
+          }),
         }
       );
       if (!response.ok) throw new Error('Failed to update store name');
@@ -133,7 +142,7 @@ export default function Dashboard() {
   };
 
   return (
-    <div className='h-full flex-1 p-8 flex flex-col gap-[30px] overflow-y-scroll'>
+    <div className='h-full flex-1 p-8 flex flex-col gap-[30px] overflow-y-scroll min-w-[1080px]'>
       <div className='flex flex-col'>
         <h1 className='text-[32px] inter-semibold'>가게 관리</h1>
         <h2 className='text-[16px] inter-medium text-ml-gray-dark'>
@@ -150,10 +159,11 @@ export default function Dashboard() {
               <span className='w-[400px] border border-ml-gray-dark rounded-2xl p-4 focus:outline-0 focus:border-ml-yellow inter-regular'>
                 {formData.email}
               </span>
+              <div className='flex items-center justify-center gap-2 rounded-2xl  bg-white text-white p-4 w-[200px] h-[58px] '></div>
             </div>
           </div>
 
-          <div className='flex flex-col  gap-2 mr-20'>
+          <div className='flex flex-col  gap-2 md:mr-20'>
             <span className='inter-semibold'>기존 비밀번호</span>
             <div className='flex gap-8 w-full'>
               <input
@@ -168,27 +178,41 @@ export default function Dashboard() {
         </div>
 
         <div className='flex gap-4 w-full justify-between'>
-          <div className='flex flex-col  gap-2'>
+          <div className='flex flex-col gap-2'>
             <span className='inter-semibold'>가게 이름</span>
-            <div className='flex gap-8 w-full'>
+            <div className='flex flex-col gap-4 w-full'>
               <input
                 id='storeName'
                 type='text'
                 value={formData.storeName}
                 onChange={handleChange}
-                placeholder='가게 이름'
+                placeholder='가게 이름 (한글)'
                 className='w-[400px] border border-ml-gray-dark rounded-2xl p-4 focus:outline-0 focus:border-ml-yellow'
               />
-              <button
-                onClick={handleStoreNameSubmit}
-                className='flex items-center justify-center gap-2 rounded-2xl hover:cursor-pointer bg-ml-yellow text-white p-4 w-[200px]'
-              >
-                <Image src='Submit.svg' alt='add' width={16} height={16} />
-                <span className='inter-regular '>가게 이름 변경</span>
-              </button>
+
+              <div className='flex flex-col gap-2'>
+                <span className='inter-semibold'>가게 이름 (영문)</span>
+                <div className='flex gap-8'>
+                  <input
+                    id='storeNameEn'
+                    type='text'
+                    value={formData.storeNameEn}
+                    onChange={handleChange}
+                    placeholder='가게 이름 (영문)'
+                    className='w-[400px] border border-ml-gray-dark rounded-2xl p-4 focus:outline-0 focus:border-ml-yellow'
+                  />
+                  <button
+                    onClick={handleStoreNameSubmit}
+                    className='flex items-center justify-center gap-2 rounded-2xl hover:cursor-pointer h-[58px] bg-ml-yellow text-white p-4 w-[200px]'
+                  >
+                    <Image src='Submit.svg' alt='add' width={16} height={16} />
+                    <span className='inter-regular '>가게 이름 변경</span>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
-          <div className='flex flex-col  gap-2 mr-20'>
+          <div className='flex flex-col  gap-2 md:mr-20'>
             <span className='inter-semibold'>변경할 비밀번호</span>
             <div className='flex gap-8 w-full'>
               <input
@@ -226,7 +250,7 @@ export default function Dashboard() {
 
               <button
                 onClick={handlePasswordChange}
-                className='flex items-center justify-center gap-2 rounded-2xl hover:cursor-pointer bg-ml-yellow text-white p-4 w-[200px] mr-20'
+                className='flex items-center justify-center gap-2 rounded-2xl hover:cursor-pointer bg-ml-yellow text-white p-4 w-[200px] md:mr-20'
               >
                 <Image src='Submit.svg' alt='add' width={16} height={16} />
                 <span className='inter-regular '>비밀번호 변경</span>
