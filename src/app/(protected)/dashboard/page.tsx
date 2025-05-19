@@ -165,7 +165,7 @@ export default function Dashboard() {
           <div className='flex flex-col  gap-2'>
             <span className='inter-semibold'>Email</span>
             <div className='flex gap-8 w-full'>
-              <span className='w-[400px] border border-ml-gray-dark rounded-2xl p-4 focus:outline-0 focus:border-ml-yellow inter-regular'>
+              <span className='w-[400px] border border-indigo-300 rounded-2xl p-4 focus:outline-0 focus:border-indigo-600 inter-regular'>
                 {formData.email}
               </span>
               <div className='flex items-center justify-center gap-2 rounded-2xl  bg-white text-white p-4 w-[200px] h-[58px] '></div>
@@ -180,7 +180,7 @@ export default function Dashboard() {
                 type='password'
                 value={formData.oldPassword}
                 onChange={handleChange}
-                className='w-[300px] border border-ml-gray-dark rounded-2xl p-4 focus:outline-0 focus:border-ml-yellow'
+                className='w-[300px] border border-indigo-300 rounded-2xl p-4 focus:outline-0 focus:border-indigo-600'
               />
             </div>
           </div>
@@ -196,7 +196,7 @@ export default function Dashboard() {
                 value={formData.storeName}
                 onChange={handleChange}
                 placeholder='가게 이름 (한글)'
-                className='w-[400px] border border-ml-gray-dark rounded-2xl p-4 focus:outline-0 focus:border-ml-yellow'
+                className='w-[400px] border border-indigo-300 rounded-2xl p-4 focus:outline-0 focus:border-indigo-600'
               />
 
               <div className='flex flex-col gap-2'>
@@ -208,11 +208,11 @@ export default function Dashboard() {
                     value={formData.storeNameEn}
                     onChange={handleChange}
                     placeholder='가게 이름 (영문)'
-                    className='w-[400px] border border-ml-gray-dark rounded-2xl p-4 focus:outline-0 focus:border-ml-yellow'
+                    className='w-[400px] border border-indigo-300 rounded-2xl p-4 focus:outline-0 focus:border-indigo-600'
                   />
                   <button
                     onClick={handleStoreNameSubmit}
-                    className='flex items-center justify-center gap-2 rounded-2xl hover:cursor-pointer h-[58px] bg-ml-yellow text-white p-4 w-[200px]'
+                    className='flex items-center justify-center gap-2 rounded-2xl hover:cursor-pointer h-[58px] bg-indigo-500 text-white p-4 w-[200px]'
                   >
                     <Image src='Submit.svg' alt='add' width={16} height={16} />
                     <span className='inter-regular '>가게 이름 변경</span>
@@ -221,7 +221,7 @@ export default function Dashboard() {
               </div>
             </div>
           </div>
-          <div className='flex flex-col  gap-2 md:mr-20'>
+          <div className='flex flex-col  gap-2 md:mr-20 relative'>
             <span className='inter-semibold'>변경할 비밀번호</span>
             <div className='flex gap-8 w-full'>
               <input
@@ -229,9 +229,16 @@ export default function Dashboard() {
                 type='password'
                 value={formData.newPassword}
                 onChange={handleChange}
-                className='w-[300px] border border-ml-gray-dark rounded-2xl p-4 focus:outline-0 focus:border-ml-yellow'
+                className='w-[300px] border border-indigo-300 rounded-2xl p-4 focus:outline-0 focus:border-indigo-600'
               />
             </div>
+            <button
+              onClick={handlePasswordChange}
+              className='absolute right-0 top-35 flex items-center justify-center gap-2 rounded-2xl hover:cursor-pointer bg-indigo-500 text-white p-4 w-[200px] '
+            >
+              <Image src='Submit.svg' alt='add' width={16} height={16} />
+              <span className='inter-regular '>비밀번호 변경</span>
+            </button>
           </div>
         </div>
 
@@ -246,24 +253,16 @@ export default function Dashboard() {
                   value={formData.adminName}
                   onChange={handleChange}
                   placeholder='사장님 이름'
-                  className='w-[400px] border border-ml-gray-dark rounded-2xl p-4 focus:outline-0 focus:border-ml-yellow'
+                  className='w-[400px] border border-indigo-300 rounded-2xl p-4 focus:outline-0 focus:border-indigo-600'
                 />
                 <button
                   onClick={handleAdminNameSubmit}
-                  className='flex items-center justify-center gap-2 rounded-2xl hover:cursor-pointer bg-ml-yellow text-white p-4 w-[200px]'
+                  className='flex items-center justify-center gap-2 rounded-2xl hover:cursor-pointer bg-indigo-500 text-white p-4 w-[200px]'
                 >
                   <Image src='Submit.svg' alt='add' width={16} height={16} />
                   <span className='inter-regular '>사장님 이름 변경</span>
                 </button>
               </div>
-
-              <button
-                onClick={handlePasswordChange}
-                className='flex items-center justify-center gap-2 rounded-2xl hover:cursor-pointer bg-ml-yellow text-white p-4 w-[200px] md:mr-20'
-              >
-                <Image src='Submit.svg' alt='add' width={16} height={16} />
-                <span className='inter-regular '>비밀번호 변경</span>
-              </button>
             </div>
           </div>
         </div>
@@ -278,11 +277,11 @@ export default function Dashboard() {
                 value={formData.tableCount}
                 onChange={handleChange}
                 placeholder='테이블수'
-                className='w-[400px] border border-ml-gray-dark rounded-2xl p-4 focus:outline-0 focus:border-ml-yellow'
+                className='w-[400px] border border-indigo-300 rounded-2xl p-4 focus:outline-0 focus:border-indigo-600'
               />
               <button
                 onClick={handleTableCountSubmit}
-                className='flex items-center justify-center gap-2 rounded-2xl hover:cursor-pointer bg-ml-yellow text-white p-4 w-[200px]'
+                className='flex items-center justify-center gap-2 rounded-2xl hover:cursor-pointer bg-indigo-500 text-white p-4 w-[200px]'
               >
                 <Image src='Submit.svg' alt='add' width={16} height={16} />
                 <span className='inter-regular '>테이블 수 등록</span>

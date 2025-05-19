@@ -16,8 +16,10 @@ export default function NavigationBar() {
   ];
 
   return (
-    <div className='w-[18%] rounded-r-[25px] text-white bg-ml-yellow h-full flex flex-col justify-between '>
-      <ul className='flex flex-col gap-2 w-[84%] mx-auto mt-24'>
+    <div className='w-[18%] rounded-r-[25px] text-white bg-indigo-600 h-full flex flex-col  '>
+      <p className='p-4 mx-auto'>Profile Placeholder</p>
+
+      <ul className='flex flex-col gap-2 w-[84%] mx-auto mt-14'>
         {navItems.map(({ href, label, icon }) => {
           const isSelected = pathname === href;
           const imageSrc = `/${icon}${isSelected ? 'S' : ''}.svg`;
@@ -25,7 +27,7 @@ export default function NavigationBar() {
             <li
               key={href}
               className={`w-full p-4 rounded-2xl ${
-                isSelected ? 'bg-[#e6eff3] text-[#333333]' : ''
+                isSelected ? 'bg-indigo-100 text-indigo-600' : ''
               }`}
             >
               <Link href={href} className='flex items-center gap-2'>
@@ -36,8 +38,6 @@ export default function NavigationBar() {
           );
         })}
       </ul>
-
-      <p className='p-5'>Profile Placeholder</p>
     </div>
   );
 }

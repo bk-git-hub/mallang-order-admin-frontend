@@ -76,10 +76,10 @@ export default function Login() {
       <div className=''>
         <div>
           <div className='flex flex-col gap-2'>
-            <h2 className='text-[40px] inter-bold font-bold text-gray-900'>
+            <h2 className='text-[40px] inter-bold font-bold text-indigo-900'>
               Login
             </h2>
-            <p className='inter-regular text-[15px] text-[#667085]'>
+            <p className='inter-regular text-[15px] text-indigo-700'>
               로그인하고 효율적인 가게 관리를 시작해볼까요?
             </p>
           </div>
@@ -90,7 +90,9 @@ export default function Login() {
         >
           <div className='rounded-md'>
             <div className='relative h-20'>
-              <label htmlFor='email'>Email</label>
+              <label htmlFor='email' className='text-indigo-900'>
+                Email
+              </label>
               <div className='relative'>
                 <input
                   id='email'
@@ -98,15 +100,15 @@ export default function Login() {
                   autoComplete='email'
                   {...register('email')}
                   className={`appearance-none rounded-[8px] relative block w-full px-3 py-2 border ${
-                    errors.email ? 'border-red-300' : 'border-gray-300'
-                  } placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:border-ml-yellow focus:z-10 sm:text-sm `}
+                    errors.email ? 'border-red-300' : 'border-indigo-300'
+                  } placeholder-indigo-400 text-indigo-900 rounded-t-md focus:outline-none focus:border-indigo-500 focus:z-10 sm:text-sm `}
                   placeholder='youremail@example.com'
                 />
                 {email && (
                   <button
                     type='button'
                     onClick={handleClearEmail}
-                    className='absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 z-10'
+                    className='absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-indigo-600 z-10'
                   >
                     ✕
                   </button>
@@ -119,7 +121,9 @@ export default function Login() {
               )}
             </div>
             <div className='relative h-20'>
-              <label htmlFor='password'>Password</label>
+              <label htmlFor='password' className='text-indigo-900'>
+                Password
+              </label>
               <div className='relative'>
                 <input
                   id='password'
@@ -127,8 +131,8 @@ export default function Login() {
                   autoComplete='current-password'
                   {...register('password')}
                   className={`appearance-none rounded-[8px] relative block w-full px-3 py-2 border ${
-                    errors.password ? 'border-red-300' : 'border-gray-300'
-                  } placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:border-ml-yellow focus:z-10 sm:text-sm`}
+                    errors.password ? 'border-red-300' : 'border-indigo-300'
+                  } placeholder-indigo-400 text-indigo-900 rounded-b-md focus:outline-none focus:border-indigo-600 focus:z-10 sm:text-sm`}
                   placeholder='Enter your password'
                 />
                 <button
@@ -156,7 +160,7 @@ export default function Login() {
             <button
               type='submit'
               disabled={isSubmitting}
-              className='hover:cursor-pointer mt-[18px] group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-ml-yellow focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed'
+              className='hover:cursor-pointer mt-[18px] group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed'
             >
               {isSubmitting ? 'Logging in...' : 'Login'}
             </button>
@@ -164,7 +168,7 @@ export default function Login() {
         </form>
         <Link
           href='/signup'
-          className='font-medium text-ml-yellow w-[360px] flex justify-center mt-[18px]'
+          className='font-medium text-indigo-600 w-[360px] flex justify-center mt-[18px]'
         >
           계정이 없으신가요? Sign up
         </Link>

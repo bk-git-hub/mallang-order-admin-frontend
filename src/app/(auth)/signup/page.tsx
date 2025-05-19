@@ -174,10 +174,10 @@ export default function SignUp() {
       <div className=''>
         <div>
           <div className='flex flex-col gap-2'>
-            <h2 className='text-[40px] inter-bold font-bold  text-gray-900'>
+            <h2 className='text-[40px] inter-bold font-bold  text-indigo-900'>
               Sign up
             </h2>
-            <p className='inter-regular text-[15px] text-[#667085]'>
+            <p className='inter-regular text-[15px] text-indigo-700'>
               말랑오더에 가입하고 효율적인 가게 관리를 시작해볼까요?
             </p>
           </div>
@@ -188,15 +188,17 @@ export default function SignUp() {
         >
           <div className='rounded-md'>
             <div className='relative h-20 flex flex-col gap-2'>
-              <label htmlFor='name'>Your Name</label>
+              <label htmlFor='name' className='text-indigo-900'>
+                Your Name
+              </label>
               <div className='relative'>
                 <input
                   id='name'
                   type='text'
                   {...register('name')}
                   className={`appearance-none rounded-[8px] relative h-[46px] block w-full px-3 py-2 border ${
-                    errors.name ? 'border-red-300' : 'border-gray-300'
-                  } placeholder-gray-500 text-gray-900 focus:outline-none focus:border-ml-yellow focus:z-10 sm:text-sm`}
+                    errors.name ? 'border-red-300' : 'border-indigo-300'
+                  } placeholder-indigo-300 text-indigo-900 focus:outline-none focus:border-indigo-300 focus:z-10 sm:text-sm`}
                   placeholder='김말랑'
                 />
                 {name && (
@@ -218,15 +220,17 @@ export default function SignUp() {
             <div className='flex gap-3 items-center'>
               <div className='flex flex-col'>
                 <div className='relative h-20'>
-                  <label htmlFor='storeName'>Store Name (Korean)</label>
+                  <label htmlFor='storeName' className='text-indigo-900'>
+                    Store Name (Korean)
+                  </label>
 
                   <input
                     id='storeName'
                     type='text'
                     {...register('storeName')}
                     className={`appearance-none rounded-[8px] relative block w-[265px] h-[46px] px-3 py-2 border ${
-                      errors.storeName ? 'border-red-300' : 'border-gray-300'
-                    } placeholder-gray-500 text-gray-900 focus:outline-none focus:border-ml-yellow focus:z-10 sm:text-sm`}
+                      errors.storeName ? 'border-red-300' : 'border-indigo-300'
+                    } placeholder-indigo-300 text-indigo-900 focus:outline-none focus:border-indigo-300 focus:z-10 sm:text-sm`}
                     placeholder='Store Name (Korean)'
                   />
 
@@ -237,14 +241,18 @@ export default function SignUp() {
                   )}
                 </div>
                 <div className='relative h-20'>
-                  <label htmlFor='storeNameEn'>Store Name (English)</label>
+                  <label htmlFor='storeNameEn' className='text-indigo-900'>
+                    Store Name (English)
+                  </label>
                   <input
                     id='storeNameEn'
                     type='text'
                     {...register('storeNameEn')}
                     className={`appearance-none rounded-[8px] relative block w-[265px] h-[46px] px-3 py-2 border ${
-                      errors.storeNameEn ? 'border-red-300' : 'border-gray-300'
-                    } placeholder-gray-500 text-gray-900 focus:outline-none focus:border-ml-yellow focus:z-10 sm:text-sm`}
+                      errors.storeNameEn
+                        ? 'border-red-300'
+                        : 'border-indigo-300'
+                    } placeholder-indigo-300 text-indigo-900 focus:outline-none focus:border-indigo-300 focus:z-10 sm:text-sm`}
                     placeholder='Store Name (English)'
                   />
                   {errors.storeNameEn && (
@@ -259,13 +267,15 @@ export default function SignUp() {
                 type='button'
                 onClick={handleStoreNameCheck}
                 disabled={!storeName || !storeNameEn || isStoreNameChecked}
-                className='border flex-1 hover:cursor-pointer border-ml-yellow rounded-[8px] h-[46px] px-2 py-2.5 font-normal text-ml-yellow bg-white focus:outline-none focus:ring-2 focus:ring-offset-2  disabled:opacity-50 disabled:cursor-not-allowed'
+                className='border flex-1 hover:cursor-pointer border-indigo-600 rounded-[8px] h-[46px] px-2 py-2.5 font-normal text-indigo-600 bg-white focus:outline-none focus:ring-2 focus:ring-offset-2  disabled:opacity-50 disabled:cursor-not-allowed'
               >
                 {isStoreNameChecked ? '확인완료' : '중복확인'}
               </button>
             </div>
             <div className='relative h-20'>
-              <label htmlFor='email'>Email</label>
+              <label htmlFor='email' className='text-indigo-900'>
+                Email
+              </label>
               <div className='flex gap-3'>
                 <input
                   id='email'
@@ -273,15 +283,15 @@ export default function SignUp() {
                   autoComplete='email'
                   {...register('email')}
                   className={`appearance-none rounded-[8px] relative block w-[265px] px-3 py-2 border ${
-                    errors.email ? 'border-red-300' : 'border-gray-300'
-                  } placeholder-gray-500 text-gray-900 focus:outline-none focus:border-ml-yellow focus:z-10 sm:text-sm`}
+                    errors.email ? 'border-red-300' : 'border-indigo-300'
+                  } placeholder-indigo-300 text-indigo-900 focus:outline-none focus:border-indigo-300 focus:z-10 sm:text-sm`}
                   placeholder='youremail@example.com'
                 />
                 <button
                   type='button'
                   onClick={handleEmailVerification}
                   disabled={!email || isEmailVerified}
-                  className='hover:cursor-pointer border border-ml-yellow rounded-[8px] px-2 py-2.5 font-normal text-ml-yellow bg-white focus:outline-none focus:ring-2 focus:ring-offset-2  disabled:opacity-50 disabled:cursor-not-allowed flex-1'
+                  className='hover:cursor-pointer border border-indigo-600 rounded-[8px] px-2 py-2.5 font-normal text-indigo-600 bg-white focus:outline-none focus:ring-2 focus:ring-offset-2  disabled:opacity-50 disabled:cursor-not-allowed flex-1'
                 >
                   {isEmailVerified ? '인증완료' : '인증하기'}
                 </button>
@@ -293,7 +303,9 @@ export default function SignUp() {
               )}
             </div>
             <div className='relative h-20'>
-              <label htmlFor='verificationCode'>Verification Code</label>
+              <label htmlFor='verificationCode' className='text-indigo-900'>
+                Verification Code
+              </label>
               <div className='flex gap-3'>
                 <input
                   id='verificationCode'
@@ -301,29 +313,31 @@ export default function SignUp() {
                   type='text'
                   value={verificationCode}
                   onChange={(e) => setVerificationCode(e.target.value)}
-                  className='appearance-none rounded-[8px] relative block w-[265px] px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:border-ml-yellow focus:z-10 sm:text-sm disabled:placeholder-ml-gray disabled:cursor-not-allowed'
+                  className='appearance-none rounded-[8px] relative block w-[265px] px-3 py-2 border border-indigo-300 placeholder-indigo-300 text-indigo-900 focus:outline-none focus:border-indigo-300 focus:z-10 sm:text-sm disabled:placeholder-ml-gray disabled:cursor-not-allowed'
                   placeholder='인증번호 6자리를 입력해주세요'
                 />
                 <button
                   type='button'
                   onClick={handleVerifyCode}
                   disabled={!showVerificationInput}
-                  className='hover:cursor-pointer border border-ml-yellow rounded-[8px] px-2 py-2.5 font-normal flex-1 text-ml-yellow bg-white focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed'
+                  className='hover:cursor-pointer border border-indigo-600 rounded-[8px] px-2 py-2.5 font-normal flex-1 text-indigo-600 bg-white focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed'
                 >
                   확인
                 </button>
               </div>
             </div>
             <div className='relative h-20'>
-              <label htmlFor='password'>Password</label>
+              <label htmlFor='password' className='text-indigo-900'>
+                Password
+              </label>
               <input
                 id='password'
                 type='password'
                 autoComplete='new-password'
                 {...register('password')}
                 className={`appearance-none h-[46px] rounded-[8px] relative block w-full px-3 py-2 border ${
-                  errors.password ? 'border-red-300' : 'border-gray-300'
-                } placeholder-gray-500 text-gray-900 focus:outline-none focus:border-ml-yellow focus:z-10 sm:text-sm`}
+                  errors.password ? 'border-red-300' : 'border-indigo-300'
+                } placeholder-indigo-300 text-indigo-900 focus:outline-none focus:border-indigo-300 focus:z-10 sm:text-sm`}
                 placeholder='영문, 숫자, 하나 이상의 특수문자를 포함하는 8 ~ 16자'
               />
               {errors.password && (
@@ -338,7 +352,7 @@ export default function SignUp() {
             <button
               type='submit'
               disabled={isSubmitting}
-              className='hover:cursor-pointer mt-[18px] group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-ml-yellow focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed'
+              className='hover:cursor-pointer mt-[18px] group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed'
             >
               {isSubmitting ? 'Signing up...' : 'Sign up'}
             </button>
@@ -346,7 +360,7 @@ export default function SignUp() {
         </form>
         <Link
           href='/login'
-          className='font-medium text-ml-yellow w-[360px] flex justify-center mt-[18px]'
+          className='font-medium text-indigo-600 w-[360px] flex justify-center mt-[18px]'
         >
           이미 회원이신가요? Login
         </Link>

@@ -65,7 +65,7 @@ export default function CategoryDeleter({
         <DropdownMenu>
           <span className='inter-semibold'>삭제할 카테고리</span>
           <DropdownMenuTrigger
-            className='outline-0 w-[400px] border border-ml-gray-dark text-black rounded-2xl flex disabled:opacity-50'
+            className='outline-0 w-[400px] border border-indigo-300 text-black rounded-2xl flex disabled:opacity-50'
             disabled={loading || filteredCategories.length === 0}
           >
             {filteredCategories.length === 0 ? (

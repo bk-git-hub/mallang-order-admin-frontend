@@ -8,7 +8,7 @@ import { toast } from 'sonner';
 interface Menu {
   menuId: number;
   menuName: string;
-  menuNameEn: string;
+  menuNamEn: string;
   menuPrice: number;
   imageUrl?: string;
   adminId: number;
@@ -68,7 +68,7 @@ export default function Menus() {
       if (!response.ok) throw new Error('Failed to fetch categories');
       const data = await response.json();
       const filteredCategories = data.filter(
-        (cat: Category) => cat.categoryName !== 'Default'
+        (cat: Category) => cat.categoryName !== '전체'
       );
       setCategories(filteredCategories);
       if (filteredCategories.length > 0)
@@ -126,7 +126,7 @@ export default function Menus() {
     setSubmitting(true);
     const formData = new FormData();
     formData.append('menuName', selectedMenu.menuName);
-    formData.append('menuNameEn', selectedMenu.menuNameEn);
+    formData.append('menuNameEn', selectedMenu.menuNamEn);
     formData.append('menuPrice', selectedMenu.menuPrice.toString());
     formData.append(
       'categoryIds',
@@ -215,7 +215,7 @@ export default function Menus() {
                   value={menuName}
                   onChange={(e) => setMenuName(e.target.value)}
                   placeholder='메뉴 이름 (한글)'
-                  className='border border-ml-gray-dark rounded-2xl p-4 focus:outline-0 focus:border-ml-yellow'
+                  className='border border-indigo-300 rounded-2xl p-4 focus:outline-0 focus:border-indigo-600'
                 />
               </div>
               <div className='flex flex-col gap-2 flex-1'>
@@ -228,7 +228,7 @@ export default function Menus() {
                   value={menuNameEn}
                   onChange={(e) => setMenuNameEn(e.target.value)}
                   placeholder='메뉴 이름 (영문)'
-                  className='border border-ml-gray-dark rounded-2xl p-4 focus:outline-0 focus:border-ml-yellow'
+                  className='border border-indigo-300 rounded-2xl p-4 focus:outline-0 focus:border-indigo-600'
                 />
               </div>
             </div>
@@ -243,7 +243,7 @@ export default function Menus() {
                   value={menuPrice}
                   onChange={(e) => setMenuPrice(e.target.value)}
                   placeholder='가격'
-                  className='border border-ml-gray-dark rounded-2xl p-4 focus:outline-0 focus:border-ml-yellow'
+                  className='border border-indigo-300 rounded-2xl p-4 focus:outline-0 focus:border-indigo-600'
                 />
               </div>
               <div className='flex flex-col gap-2 flex-1'>
@@ -254,7 +254,7 @@ export default function Menus() {
                   id='menu-category'
                   value={menuCategory}
                   onChange={(e) => setMenuCategory(e.target.value)}
-                  className='border border-ml-gray-dark rounded-2xl p-4 focus:outline-0 focus:border-ml-yellow'
+                  className='border border-indigo-300 rounded-2xl p-4 focus:outline-0 focus:border-indigo-600'
                 >
                   {categories.map((category) => (
                     <option
@@ -276,13 +276,13 @@ export default function Menus() {
                 type='file'
                 accept='image/*'
                 onChange={(e) => setMenuImage(e.target.files?.[0] || null)}
-                className='border border-ml-gray-dark rounded-2xl p-4 focus:outline-0 focus:border-ml-yellow'
+                className='border border-indigo-300 rounded-2xl p-4 focus:outline-0 focus:border-indigo-600'
               />
             </div>
             <button
               type='submit'
               disabled={submitting}
-              className='flex items-center justify-center gap-2 rounded-2xl hover:cursor-pointer bg-ml-yellow text-white p-4 w-[200px] mt-4 disabled:opacity-50'
+              className='flex items-center justify-center gap-2 rounded-2xl hover:cursor-pointer bg-indigo-500 text-white p-4 w-[200px] mt-4 disabled:opacity-50'
             >
               <Image src='/Submit.svg' alt='add' width={16} height={16} />
               <span className='inter-regular'>
@@ -299,7 +299,7 @@ export default function Menus() {
             <select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(Number(e.target.value))}
-              className='border border-ml-gray-dark rounded-xl p-2 focus:outline-0 focus:border-ml-yellow'
+              className='border border-indigo-300 rounded-xl p-2 focus:outline-0 focus:border-indigo-600'
             >
               <option value={0}>전체 카테고리</option>
               {categories.map((category) => (
@@ -316,7 +316,7 @@ export default function Menus() {
               {filteredMenus.map((menu) => (
                 <div
                   key={menu.menuId}
-                  className='border border-ml-gray-dark rounded-2xl p-4 flex flex-col gap-2'
+                  className='border border-indigo-300 bg-indigo-100 text-indigo-900 rounded-2xl p-4 flex flex-col gap-2'
                 >
                   {menu.imageUrl && (
                     <div className='relative w-full h-48 rounded-xl overflow-hidden'>
@@ -329,20 +329,20 @@ export default function Menus() {
                     </div>
                   )}
                   <h4 className='text-lg font-semibold'>{menu.menuName}</h4>
-                  <p className='text-sm text-gray-600'>{menu.menuNameEn}</p>
+                  <p className='text-sm text-gray-600'>{menu.menuNamEn}</p>
                   <p className='font-semibold'>
                     {menu.menuPrice.toLocaleString()}원
                   </p>
-                  <p className='text-ml-gray-dark'>
+                  <p className='text-indigo-500'>
                     {menu.categories
-                      .filter((cat) => cat.categoryName !== 'Default')
+                      .filter((cat) => cat.categoryName !== '전체')
                       .map((cat) => cat.categoryName)
                       .join(', ')}
                   </p>
                   <div className='flex gap-2 mt-2'>
                     <button
                       onClick={() => setSelectedMenu(menu)}
-                      className='flex-1 py-2 px-4 bg-ml-yellow hover:cursor-pointer text-white rounded-xl hover:opacity-80'
+                      className='flex-1 py-2 px-4 bg-indigo-500 hover:cursor-pointer text-white rounded-xl hover:opacity-80'
                     >
                       수정
                     </button>
@@ -380,21 +380,21 @@ export default function Menus() {
                           menuName: e.target.value,
                         })
                       }
-                      className='border border-ml-gray-dark rounded-2xl p-4 focus:outline-0 focus:border-ml-yellow'
+                      className='border border-indigo-300 rounded-2xl p-4 focus:outline-0 focus:border-indigo-600'
                     />
                   </div>
                   <div className='flex flex-col gap-2 flex-1'>
                     <label className='inter-semibold'>메뉴 이름 (영문)</label>
                     <input
                       type='text'
-                      value={selectedMenu.menuNameEn}
+                      value={selectedMenu.menuNamEn}
                       onChange={(e) =>
                         setSelectedMenu({
                           ...selectedMenu,
-                          menuNameEn: e.target.value,
+                          menuNamEn: e.target.value,
                         })
                       }
-                      className='border border-ml-gray-dark rounded-2xl p-4 focus:outline-0 focus:border-ml-yellow'
+                      className='border border-indigo-300 rounded-2xl p-4 focus:outline-0 focus:border-indigo-600'
                     />
                   </div>
                 </div>
@@ -410,7 +410,7 @@ export default function Menus() {
                           menuPrice: parseInt(e.target.value),
                         })
                       }
-                      className='border border-ml-gray-dark rounded-2xl p-4 focus:outline-0 focus:border-ml-yellow'
+                      className='border border-indigo-300 rounded-2xl p-4 focus:outline-0 focus:border-indigo-600'
                     />
                   </div>
                   <div className='flex flex-col gap-2 flex-1'>
@@ -432,10 +432,10 @@ export default function Menus() {
                           ],
                         })
                       }
-                      className='border border-ml-gray-dark rounded-2xl p-4 focus:outline-0 focus:border-ml-yellow'
+                      className='border border-indigo-300 rounded-2xl p-4 focus:outline-0 focus:border-indigo-600'
                     >
                       {categories
-                        .filter((cat) => cat.categoryName !== 'Default')
+                        .filter((cat) => cat.categoryName !== '전체')
                         .map((category) => (
                           <option
                             key={category.categoryId}
@@ -465,7 +465,7 @@ export default function Menus() {
                     onChange={(e) =>
                       setUpdateImage(e.target.files?.[0] || null)
                     }
-                    className='border border-ml-gray-dark rounded-2xl p-4 focus:outline-0 focus:border-ml-yellow'
+                    className='border border-indigo-300 rounded-2xl p-4 focus:outline-0 focus:border-indigo-600'
                   />
                   {updateImage && (
                     <div className='text-sm text-blue-500'>
@@ -487,7 +487,7 @@ export default function Menus() {
                   <button
                     type='submit'
                     disabled={submitting}
-                    className='flex-1 py-2 px-4 bg-ml-yellow text-white rounded-xl hover:cursor-pointer hover:opacity-80 disabled:opacity-50'
+                    className='flex-1 py-2 px-4 bg-indigo-500 text-white rounded-xl hover:cursor-pointer hover:opacity-80 disabled:opacity-50'
                   >
                     {submitting ? '처리중...' : '저장'}
                   </button>

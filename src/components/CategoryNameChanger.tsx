@@ -81,7 +81,7 @@ export default function CategoryNameChanger({
         <DropdownMenu>
           <span className='inter-semibold'>변경할 카테고리</span>
           <DropdownMenuTrigger
-            className='outline-0 w-[400px] border border-ml-gray-dark text-black rounded-2xl flex disabled:opacity-50'
+            className='outline-0 w-[400px] border border-indigo-300 text-black rounded-2xl flex disabled:opacity-50'
             disabled={loading || filteredCategories.length === 0}
           >
             {filteredCategories.length === 0 ? (
@@ -143,7 +143,7 @@ export default function CategoryNameChanger({
             onChange={(e) => setNewCategoryName(e.target.value)}
             placeholder='새로운 카테고리 이름 (한글)'
             disabled={!selectedCategory || loading}
-            className='w-[400px] border border-ml-gray-dark rounded-2xl p-4 focus:outline-0 focus:border-ml-yellow disabled:opacity-50'
+            className='w-[300px] border border-indigo-300 rounded-2xl p-4 focus:outline-0 focus:border-indigo-600 disabled:opacity-50'
           />
           <div className='flex gap-8'>
             <input
@@ -153,7 +153,7 @@ export default function CategoryNameChanger({
               onChange={(e) => setNewCategoryNameEn(e.target.value)}
               placeholder='새로운 카테고리 이름 (영문)'
               disabled={!selectedCategory || loading}
-              className='w-[400px] border border-ml-gray-dark rounded-2xl p-4 focus:outline-0 focus:border-ml-yellow disabled:opacity-50'
+              className='w-[300px] border border-indigo-300 rounded-2xl p-4 focus:outline-0 focus:border-indigo-600 disabled:opacity-50'
             />
             <button
               onClick={handleUpdate}
@@ -163,7 +163,7 @@ export default function CategoryNameChanger({
                 !newCategoryNameEn.trim() ||
                 loading
               }
-              className='flex items-center justify-center gap-2 rounded-2xl hover:cursor-pointer bg-ml-yellow text-white p-4 w-[200px] disabled:opacity-50'
+              className='flex items-center justify-center gap-2 rounded-2xl hover:cursor-pointer bg-indigo-500 text-white p-4 w-[200px] disabled:opacity-50'
             >
               <Image src='/Submit.svg' alt='add' width={16} height={16} />
               <span className='inter-regular'>

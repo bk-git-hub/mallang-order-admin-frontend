@@ -6,7 +6,7 @@ export default function AdminLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className='w-screen h-screen relative flex justify-center items-center bg-ml-bg-gray  text-black'>
+    <div className='w-screen h-screen relative flex justify-center items-center bg-indigo-100  text-indigo-900'>
       <NavigationBar />
       {children}
     </div>

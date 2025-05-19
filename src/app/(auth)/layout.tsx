@@ -7,7 +7,7 @@ export default function AuthLayout({
 }>) {
   return (
     <div className='w-screen h-screen relative flex justify-center items-center py-10 px-50 bg-white text-black'>
-      <h1 className='absolute top-[22px] left-[44px] barlow-600 font-semibold text-[28px] '>
+      <h1 className='absolute top-[22px] left-[44px] barlow-600 font-semibold text-[28px] text-indigo-900'>
         Mallang Order
       </h1>
       <div className=' flex max-w-[1000px] justify-between  h-full'>
