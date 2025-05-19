@@ -145,30 +145,32 @@ export default function CategoryNameChanger({
             disabled={!selectedCategory || loading}
             className='w-[400px] border border-ml-gray-dark rounded-2xl p-4 focus:outline-0 focus:border-ml-yellow disabled:opacity-50'
           />
-          <input
-            id='category-name-en'
-            type='text'
-            value={newCategoryNameEn}
-            onChange={(e) => setNewCategoryNameEn(e.target.value)}
-            placeholder='새로운 카테고리 이름 (영문)'
-            disabled={!selectedCategory || loading}
-            className='w-[400px] border border-ml-gray-dark rounded-2xl p-4 focus:outline-0 focus:border-ml-yellow disabled:opacity-50'
-          />
-          <button
-            onClick={handleUpdate}
-            disabled={
-              !selectedCategory ||
-              !newCategoryName.trim() ||
-              !newCategoryNameEn.trim() ||
-              loading
-            }
-            className='flex items-center justify-center gap-2 rounded-2xl hover:cursor-pointer bg-ml-yellow text-white p-4 w-[200px] disabled:opacity-50'
-          >
-            <Image src='/Submit.svg' alt='add' width={16} height={16} />
-            <span className='inter-regular'>
-              {loading ? '처리중...' : '이름 변경하기'}
-            </span>
-          </button>
+          <div className='flex gap-8'>
+            <input
+              id='category-name-en'
+              type='text'
+              value={newCategoryNameEn}
+              onChange={(e) => setNewCategoryNameEn(e.target.value)}
+              placeholder='새로운 카테고리 이름 (영문)'
+              disabled={!selectedCategory || loading}
+              className='w-[400px] border border-ml-gray-dark rounded-2xl p-4 focus:outline-0 focus:border-ml-yellow disabled:opacity-50'
+            />
+            <button
+              onClick={handleUpdate}
+              disabled={
+                !selectedCategory ||
+                !newCategoryName.trim() ||
+                !newCategoryNameEn.trim() ||
+                loading
+              }
+              className='flex items-center justify-center gap-2 rounded-2xl hover:cursor-pointer bg-ml-yellow text-white p-4 w-[200px] disabled:opacity-50'
+            >
+              <Image src='/Submit.svg' alt='add' width={16} height={16} />
+              <span className='inter-regular'>
+                {loading ? '처리중...' : '이름 변경하기'}
+              </span>
+            </button>
+          </div>
         </div>
       </div>
     </div>
