@@ -86,6 +86,9 @@ export default function Dashboard() {
         `${process.env.NEXT_PUBLIC_API_URL}/api/admin/change-admin-name`,
         {
           method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
           body: JSON.stringify({ newName: formData.adminName }),
         }
       );
@@ -104,6 +107,9 @@ export default function Dashboard() {
         `${process.env.NEXT_PUBLIC_API_URL}/api/admin/change-password`,
         {
           method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
           body: JSON.stringify({
             oldPassword: formData.oldPassword,
             newPassword: formData.newPassword,
@@ -129,6 +135,9 @@ export default function Dashboard() {
         `${process.env.NEXT_PUBLIC_API_URL}/api/kiosk/set`,
         {
           method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
           body: JSON.stringify({ count: formData.tableCount }),
         }
       );
