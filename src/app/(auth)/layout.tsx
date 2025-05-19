@@ -10,7 +10,7 @@ export default function AuthLayout({
       <h1 className='absolute top-[22px] left-[44px] barlow-600 font-semibold text-[28px] '>
         Mallang Order
       </h1>
-      <div className=' flex gap-[300px] h-full'>
+      <div className=' flex max-w-[1000px] justify-between  h-full'>
         {children}
         <div className='w-[483px] h-[483px] relative mt-[67px]'>
           <Image src='/logoT.png' alt='mallang order logo' fill />
