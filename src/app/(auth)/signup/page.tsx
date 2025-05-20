@@ -52,17 +52,16 @@ export default function SignUp() {
           body: JSON.stringify({ email }),
         }
       );
-      const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || '이메일 인증번호 발송에 실패했습니다.');
+        throw new Error('이메일 인증번호 발송에 실패했습니다.');
       }
 
       setShowVerificationInput(true);
       toast('인증번호가 전송되었습니다');
     } catch (error: any) {
       console.error('Email verification failed:', error);
-      toast.error(error.message || '이메일 인증번호 발송에 실패했습니다');
+      toast.error('이메일 인증번호 발송에 실패했습니다');
     }
   };
 
