@@ -62,7 +62,7 @@ export default function SignUp() {
       toast('인증번호가 전송되었습니다');
     } catch (error: any) {
       console.error('Email verification failed:', error);
-      toast(error.message || '이메일 인증번호 발송에 실패했습니다');
+      toast.error(error.message || '이메일 인증번호 발송에 실패했습니다');
     }
   };
 
@@ -81,17 +81,17 @@ export default function SignUp() {
           }),
         }
       );
-
+      const data = await response.json();
       if (!response.ok) {
-        throw new Error('인증번호가 일치하지 않습니다.');
+        throw new Error(data.message || '인증번호가 일치하지 않습니다.');
       }
 
       setIsEmailVerified(true);
       setShowVerificationInput(false);
       toast('이메일 인증에 성공했습니다.');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Code verification failed:', error);
-      toast.error('인증번호 확인에 실패했습니다');
+      toast.error(error.message || '인증번호 확인에 실패했습니다');
     }
   };
 
@@ -131,11 +131,11 @@ export default function SignUp() {
 
   const onSubmit = async (data: SignUpFormData) => {
     if (!isEmailVerified) {
-      toast('이메일 인증이 필요합니다.');
+      toast.error('이메일 인증이 필요합니다.');
       return;
     }
     if (!isStoreNameChecked) {
-      toast('가게 이름 중복 확인이 필요합니다.');
+      toast.error('가게 이름 중복 확인이 필요합니다.');
       return;
     }
 

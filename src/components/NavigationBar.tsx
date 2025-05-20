@@ -52,7 +52,7 @@ export default function NavigationBar() {
   };
 
   const navItems = [
-    { href: '/dashboard', label: '가게 관리', icon: 'dashboard' },
+    { href: '/dashboard', label: '가게 관리', icon: 'Dashboard' },
     { href: '/categories', label: '카테고리 관리', icon: 'Cate' },
     { href: '/menus', label: '메뉴 관리', icon: 'Menu' },
     { href: '/orders', label: '주문 관리', icon: 'Order' },

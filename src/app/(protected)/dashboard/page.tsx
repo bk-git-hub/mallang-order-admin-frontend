@@ -71,12 +71,15 @@ export default function Dashboard() {
           }),
         }
       );
-      if (!response.ok) throw new Error('Failed to update store name');
+
+      const data = await response.json();
+      if (!response.ok)
+        throw new Error(data.message || 'Failed to update store name');
       toast('가게 이름 변경 완료');
       await fetchStoreInfo(); // 정보 새로고침
-    } catch (error) {
+    } catch (error: any) {
       console.error('Store name update failed:', error);
-      toast.error('가게 이름 변경 실패');
+      toast.error(error.message || '가게 이름 변경 실패');
     }
   };
 
@@ -92,12 +95,14 @@ export default function Dashboard() {
           body: JSON.stringify({ newName: formData.adminName }),
         }
       );
-      if (!response.ok) throw new Error('Failed to update admin name');
+      const data = await response.json();
+      if (!response.ok)
+        throw new Error(data.message || 'Failed to update admin name');
       toast('사장님 이름 변경 완료');
       await fetchStoreInfo(); // 정보 새로고침
-    } catch (error) {
+    } catch (error: any) {
       console.error('Admin name update failed:', error);
-      toast.error('사장님 이름 변경 실패');
+      toast.error(error.message || '사장님 이름 변경 실패');
     }
   };
 
@@ -116,16 +121,18 @@ export default function Dashboard() {
           }),
         }
       );
-      if (!response.ok) throw new Error('Failed to update password');
+      const data = await response.json();
+      if (!response.ok)
+        throw new Error(data.message || 'Failed to update password');
       toast('비밀번호 변경 완료');
       setFormData((prev) => ({
         ...prev,
         oldPassword: '',
         newPassword: '',
       }));
-    } catch (error) {
+    } catch (error: any) {
       console.error('Password update failed:', error);
-      toast.error('비밀번호 변경 실패');
+      toast.error(error.message || '비밀번호 변경 실패');
     }
   };
 
@@ -141,12 +148,14 @@ export default function Dashboard() {
           body: JSON.stringify({ count: formData.tableCount }),
         }
       );
-      if (!response.ok) throw new Error('Failed to update table count');
+      const data = await response.json();
+      if (!response.ok)
+        throw new Error(data.message || 'Failed to update table count');
       toast('테이블 수 설정 완료');
       await fetchStoreInfo(); // 정보 새로고침
-    } catch (error) {
+    } catch (error: any) {
       console.error('Table count update failed:', error);
-      toast.error('테이블 수 설정 실패');
+      toast.error(error.message || '테이블 수 설정 실패');
     }
   };
 

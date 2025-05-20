@@ -60,16 +60,18 @@ export default function CategoryNameChanger({
         }
       );
 
-      if (!response.ok) throw new Error('Failed to update category');
+      const data = await response.json();
+      if (!response.ok)
+        throw new Error(data.message || 'Failed to update category');
 
       toast.success('카테고리 이름이 수정되었습니다');
       setSelectedCategory(null);
       setNewCategoryName('');
       setNewCategoryNameEn('');
       onUpdate?.(); // 목록 새로고침
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to update category:', error);
-      toast.error('카테고리 수정에 실패했습니다');
+      toast.error(error.message || '카테고리 수정에 실패했습니다');
     } finally {
       setLoading(false);
     }

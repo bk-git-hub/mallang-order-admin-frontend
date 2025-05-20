@@ -31,9 +31,10 @@ export default function Categories() {
       const response = await fetchWithToken(
         `${process.env.NEXT_PUBLIC_API_URL}/api/admin/categories`
       );
-      if (!response.ok) throw new Error('Failed to fetch categories');
-
       const data = await response.json();
+      if (!response.ok)
+        throw new Error(data.message || 'Failed to fetch categories');
+
       console.log('Categories:', data);
 
       // 응답이 배열인지 확인
@@ -44,9 +45,9 @@ export default function Categories() {
         toast.error('카테고리 정보 형식이 올바르지 않습니다');
       }
       setLoading(false);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to fetch categories:', error);
-      toast.error('카테고리 정보를 불러오는데 실패했습니다');
+      toast.error(error.message || '카테고리 정보를 불러오는데 실패했습니다');
       setLoading(false);
     }
   };
@@ -85,7 +86,10 @@ export default function Categories() {
         }
       );
 
-      if (!response.ok) throw new Error('Failed to add category');
+      const data = await response.json();
+
+      if (!response.ok)
+        throw new Error(data.message || '카테고리 추가에 실패했습니다');
 
       toast.success('카테고리가 추가되었습니다');
       setNewCategoryName('');
@@ -93,7 +97,7 @@ export default function Categories() {
       fetchCategories(); // 목록 새로고침
     } catch (error: any) {
       console.error('Failed to add category:', error);
-      toast.error('카테고리 추가에 실패했습니다');
+      toast.error(error.message || '카테고리 추가에 실패했습니다');
     }
   };
 

@@ -67,7 +67,7 @@ export default function Login() {
       router.push('/dashboard'); // Redirect to dashboard after successful login
     } catch (error) {
       console.error('Login failed:', error);
-      toast('로그인에 실패했습니다');
+      toast.error('로그인에 실패했습니다');
     }
   };
 

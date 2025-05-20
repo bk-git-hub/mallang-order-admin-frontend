@@ -49,12 +49,13 @@ export default function Menus() {
       const response = await fetchWithToken(
         `${process.env.NEXT_PUBLIC_API_URL}/api/admin/menus`
       );
-      if (!response.ok) throw new Error('Failed to fetch menus');
       const data = await response.json();
+      if (!response.ok)
+        throw new Error(data.message || 'Failed to fetch menus');
       setMenus(data);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to fetch menus:', error);
-      toast.error('메뉴 목록을 불러오는데 실패했습니다');
+      toast.error(error.message || '메뉴 목록을 불러오는데 실패했습니다');
     } finally {
       setLoading(false);
     }
@@ -65,17 +66,19 @@ export default function Menus() {
       const response = await fetchWithToken(
         `${process.env.NEXT_PUBLIC_API_URL}/api/admin/categories`
       );
-      if (!response.ok) throw new Error('Failed to fetch categories');
       const data = await response.json();
+      if (!response.ok)
+        throw new Error(data.message || 'Failed to fetch categories');
+
       const filteredCategories = data.filter(
         (cat: Category) => cat.categoryName !== '전체'
       );
       setCategories(filteredCategories);
       if (filteredCategories.length > 0)
         setMenuCategory(filteredCategories[0].categoryId.toString());
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to fetch categories:', error);
-      toast.error('카테고리 목록을 불러오는데 실패했습니다');
+      toast.error(error.message || '카테고리 목록을 불러오는데 실패했습니다');
     }
   };
 
@@ -103,7 +106,8 @@ export default function Menus() {
         }
       );
 
-      if (!response.ok) throw new Error('Failed to add menu');
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || 'Failed to add menu');
 
       toast.success('메뉴가 추가되었습니다');
       setMenuName('');
@@ -111,9 +115,9 @@ export default function Menus() {
       setMenuPrice('');
       setMenuImage(null);
       fetchMenus();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to add menu:', error);
-      toast.error('메뉴 추가에 실패했습니다');
+      toast.error(error.message || '메뉴 추가에 실패했습니다');
     } finally {
       setSubmitting(false);
     }
@@ -145,15 +149,17 @@ export default function Menus() {
         }
       );
 
-      if (!response.ok) throw new Error('Failed to update menu');
+      const data = await response.json();
+      if (!response.ok)
+        throw new Error(data.message || 'Failed to update menu');
 
       toast.success('메뉴가 수정되었습니다');
       setSelectedMenu(null);
       setUpdateImage(null);
       fetchMenus();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to update menu:', error);
-      toast.error('메뉴 수정에 실패했습니다');
+      toast.error(error.message || '메뉴 수정에 실패했습니다');
     } finally {
       setSubmitting(false);
     }
@@ -170,13 +176,15 @@ export default function Menus() {
         }
       );
 
-      if (!response.ok) throw new Error('Failed to delete menu');
+      const data = await response.json();
+      if (!response.ok)
+        throw new Error(data.message || 'Failed to delete menu');
 
       toast.success('메뉴가 삭제되었습니다');
       fetchMenus();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to delete menu:', error);
-      toast.error('메뉴 삭제에 실패했습니다');
+      toast.error(error.message || '메뉴 삭제에 실패했습니다');
     }
   };
 
