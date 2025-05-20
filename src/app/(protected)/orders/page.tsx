@@ -18,8 +18,10 @@ interface Order {
   items: OrderItem[];
 }
 
-interface TableOrder {
+interface Kiosk {
+  kioskId: number;
   kioskNumber: number;
+  kioskIsActive: boolean;
   orders: Order[];
 }
 
@@ -31,9 +33,11 @@ interface StoreInfo {
 }
 
 // Mock data for testing UI
-const mockOrders: TableOrder[] = [
+const mockOrders: Kiosk[] = [
   {
+    kioskId: 1,
     kioskNumber: 1,
+    kioskIsActive: true,
     orders: [
       {
         orderId: 1,
@@ -58,7 +62,7 @@ const mockOrders: TableOrder[] = [
 ];
 
 export default function Orders() {
-  const [orders, setOrders] = useState<TableOrder[]>(mockOrders);
+  const [kiosks, setKiosks] = useState<Kiosk[]>(mockOrders);
   const [tableCount, setTableCount] = useState<number>(16);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -82,8 +86,8 @@ export default function Orders() {
         `${process.env.NEXT_PUBLIC_API_URL}/api/admin/orders`
       );
       if (!storeOrderResponse.ok) throw new Error('Failed to fetch orders');
-      const orderData: TableOrder[] = await storeOrderResponse.json();
-      setOrders(orderData);
+      const orderData: Kiosk[] = await storeOrderResponse.json();
+      setKiosks(orderData);
     } catch (error) {
       console.error('Failed to fetch data:', error);
       toast.error('데이터를 불러오는데 실패했습니다');
@@ -111,6 +115,34 @@ export default function Orders() {
     } catch (error) {
       console.error('Failed to clear orders:', error);
       toast.error('주문 비우기에 실패했습니다');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleDeactivateKiosk = async (kioskId: number) => {
+    if (!confirm('정말로 이 테이블을 비활성화하시겠습니까?')) return;
+
+    setSubmitting(true);
+    try {
+      const response = await fetchWithToken(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/kiosk/deactivate`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ kioskId }),
+        }
+      );
+
+      if (!response.ok) throw new Error('Failed to deactivate kiosk');
+
+      toast.success('테이블이 비활성화되었습니다');
+      fetchInitialData();
+    } catch (error) {
+      console.error('Failed to deactivate kiosk:', error);
+      toast.error('테이블 비활성화에 실패했습니다');
     } finally {
       setSubmitting(false);
     }
@@ -164,18 +196,23 @@ export default function Orders() {
           <div className='grid grid-cols-4 gap-4'>
             {Array.from({ length: tableCount }, (_, i) => i + 1).map(
               (tableNum) => {
-                const tableOrder = orders.find(
-                  (order) => order.kioskNumber === tableNum
-                ) || { kioskNumber: tableNum, orders: [] };
-                const hasActiveOrders = tableOrder.orders.length > 0;
+                const kiosk = kiosks.find(
+                  (k) => k.kioskNumber === tableNum
+                ) || {
+                  kioskId: 0,
+                  kioskNumber: tableNum,
+                  kioskIsActive: false,
+                  orders: [],
+                };
+                const hasActiveOrders = kiosk.orders.length > 0;
 
                 return (
                   <div
                     key={tableNum}
                     className={`p-4 rounded-xl border ${
-                      hasActiveOrders
-                        ? 'border-indigo-300 bg-indigo-100 text-indigo-900'
-                        : 'border-indigo-300 bg-white'
+                      kiosk.kioskIsActive
+                        ? 'border-indigo-300 bg-white'
+                        : 'border-gray-300 bg-gray-100'
                     }`}
                   >
                     <div className='flex gap-20 justify-center items-center bg-white p-4 w-full rounded-xl'>
@@ -191,12 +228,12 @@ export default function Orders() {
 
                       <span
                         className={`p-4 rounded-2xl whitespace-nowrap ${
-                          hasActiveOrders
-                            ? 'bg-red-100 text-red-800'
-                            : 'bg-green-100 text-green-800'
+                          kiosk.kioskIsActive
+                            ? 'bg-green-100 text-green-800'
+                            : 'bg-gray-100 text-gray-800'
                         }`}
                       >
-                        {hasActiveOrders ? '사용중' : '빈테이블'}
+                        {kiosk.kioskIsActive ? '사용중' : '미사용'}
                       </span>
                     </div>
 
@@ -204,7 +241,7 @@ export default function Orders() {
                       {hasActiveOrders ? (
                         <div className='flex flex-col h-[300px]'>
                           <div className='flex-1 overflow-y-auto space-y-4 pr-2'>
-                            {tableOrder.orders.map((order) => (
+                            {kiosk.orders.map((order) => (
                               <div
                                 key={order.orderId}
                                 className='border-t border-indigo-200 pt-4'
@@ -239,7 +276,7 @@ export default function Orders() {
                             <div className='flex justify-between font-semibold'>
                               <span>총 금액</span>
                               <span>
-                                {tableOrder.orders
+                                {kiosk.orders
                                   .reduce(
                                     (sum, order) =>
                                       sum + calculateTotalPrice(order.items),
@@ -259,8 +296,21 @@ export default function Orders() {
                           </div>
                         </div>
                       ) : (
-                        <div className='text-center text-indigo-600 py-4 w-full border border-indigo-300 rounded-xl'>
-                          주문 없음
+                        <div className='flex flex-col gap-2'>
+                          <div className='text-center text-indigo-600 py-4 w-full border border-indigo-300 rounded-xl'>
+                            주문 없음
+                          </div>
+                          {kiosk.kioskIsActive && (
+                            <button
+                              onClick={() =>
+                                handleDeactivateKiosk(kiosk.kioskId)
+                              }
+                              disabled={submitting}
+                              className='w-full py-2 px-4 bg-slate-500 hover:cursor-pointer text-white rounded-xl hover:opacity-80 disabled:opacity-50'
+                            >
+                              {submitting ? '처리중...' : '테이블 비활성화'}
+                            </button>
+                          )}
                         </div>
                       )}
                     </div>
