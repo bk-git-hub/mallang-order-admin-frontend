@@ -169,7 +169,7 @@ export default function SignUp() {
   };
 
   return (
-    <div className='min-h-screen flex justify-center bg-white py-12 px-4 sm:px-6 lg:px-8'>
+    <div className='min-h-screen flex justify-center bg-white px-4 sm:px-6 lg:px-8'>
       <div className=''>
         <div>
           <div className='flex flex-col gap-2'>
