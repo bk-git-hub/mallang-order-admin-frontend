@@ -4,6 +4,12 @@ import Image from 'next/image';
 import { useState, useEffect, FormEvent } from 'react';
 import { fetchWithToken } from '@/utils/fetchWithToken';
 import { toast } from 'sonner';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 interface Menu {
   menuId: number;
@@ -132,10 +138,15 @@ export default function Menus() {
     formData.append('menuName', selectedMenu.menuName);
     formData.append('menuNameEn', selectedMenu.menuNamEn);
     formData.append('menuPrice', selectedMenu.menuPrice.toString());
-    formData.append(
-      'categoryIds',
-      selectedMenu.categories[0]?.categoryId.toString() || ''
-    );
+
+    // 기존 카테고리 정보 유지
+    const existingCategories = selectedMenu.categories;
+    const categoryIds = existingCategories
+      .filter((cat) => cat.categoryName !== '전체')
+      .map((cat) => cat.categoryId.toString())
+      .join(',');
+    formData.append('categoryIds', categoryIds);
+
     if (updateImage) {
       formData.append('image', updateImage);
     }
@@ -176,15 +187,13 @@ export default function Menus() {
         }
       );
 
-      const data = await response.json();
-      if (!response.ok)
-        throw new Error(data.message || 'Failed to delete menu');
+      if (!response.ok) throw new Error('메뉴 삭제에 실패했습니다다');
 
       toast.success('메뉴가 삭제되었습니다');
       fetchMenus();
     } catch (error: any) {
       console.error('Failed to delete menu:', error);
-      toast.error(error.message || '메뉴 삭제에 실패했습니다');
+      toast.error('메뉴 삭제에 실패했습니다');
     }
   };
 
@@ -427,36 +436,48 @@ export default function Menus() {
                   </div>
                   <div className='flex flex-col gap-2 flex-1'>
                     <label className='inter-semibold'>카테고리</label>
-                    <select
-                      value={selectedMenu.categories[0]?.categoryId}
-                      onChange={(e) =>
-                        setSelectedMenu({
-                          ...selectedMenu,
-                          categories: [
-                            {
-                              categoryId: Number(e.target.value),
-                              categoryName:
-                                categories.find(
-                                  (cat) =>
-                                    cat.categoryId === Number(e.target.value)
-                                )?.categoryName || '',
-                            },
-                          ],
-                        })
-                      }
-                      className='border border-indigo-300 rounded-2xl p-4 focus:outline-0 focus:border-indigo-600'
-                    >
-                      {categories
-                        .filter((cat) => cat.categoryName !== '전체')
-                        .map((category) => (
-                          <option
+                    <DropdownMenu>
+                      <DropdownMenuTrigger className='w-full border border-indigo-300 rounded-2xl p-4 focus:outline-0 focus:border-indigo-600 text-left flex justify-between items-center'>
+                        <span>
+                          {selectedMenu.categories.find(
+                            (cat) => cat.categoryName !== '전체'
+                          )?.categoryName || '카테고리 선택'}
+                        </span>
+                        <Image
+                          src='/DownArrow.svg'
+                          alt='arrow-down'
+                          width={16}
+                          height={16}
+                        />
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent className='w-[400px]'>
+                        {categories.map((category) => (
+                          <DropdownMenuItem
                             key={category.categoryId}
-                            value={category.categoryId}
+                            onSelect={() =>
+                              setSelectedMenu({
+                                ...selectedMenu,
+                                categories: [
+                                  {
+                                    categoryId: category.categoryId,
+                                    categoryName: category.categoryName,
+                                  },
+                                  {
+                                    categoryId:
+                                      categories.find(
+                                        (cat) => cat.categoryName === '전체'
+                                      )?.categoryId || 0,
+                                    categoryName: '전체',
+                                  },
+                                ],
+                              })
+                            }
                           >
                             {category.categoryName}
-                          </option>
+                          </DropdownMenuItem>
                         ))}
-                    </select>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </div>
                 </div>
                 <div className='flex flex-col gap-2'>
