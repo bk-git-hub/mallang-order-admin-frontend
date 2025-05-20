@@ -10,8 +10,11 @@ import Image from 'next/image';
 import { toast } from 'sonner';
 
 const loginSchema = z.object({
-  email: z.string().min(1, 'Email is required').email('Invalid email address'),
-  password: z.string().min(1, 'Password is required'),
+  email: z
+    .string()
+    .min(1, '이메일을 입력해주세요')
+    .email('이메일 형식이 올바르지 않습니다'),
+  password: z.string().min(1, '비밀번호를 입력해주세요'),
 });
 
 type LoginFormData = z.infer<typeof loginSchema>;

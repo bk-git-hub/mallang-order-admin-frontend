@@ -369,7 +369,7 @@ export default function Menus() {
                     </button>
                     <button
                       onClick={() => handleDeleteMenu(menu.menuId)}
-                      className='flex-1 py-2 px-4 bg-red-500 hover:cursor-pointer text-white rounded-xl hover:opacity-80'
+                      className='flex-1 py-2 px-4 bg-slate-500 hover:cursor-pointer text-white rounded-xl hover:opacity-80'
                     >
                       삭제
                     </button>

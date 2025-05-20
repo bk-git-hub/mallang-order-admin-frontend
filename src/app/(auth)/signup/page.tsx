@@ -10,10 +10,13 @@ import { toast } from 'sonner';
 
 const signUpSchema = z.object({
   name: z.string().min(1, '이름을 입력해주세요'),
-  storeName: z.string().min(1, 'Store name is required'),
-  storeNameEn: z.string().min(1, 'English store name is required'),
-  email: z.string().min(1, 'Email is required').email('Invalid email address'),
-  password: z.string().min(8, 'Password must be at least 8 characters'),
+  storeName: z.string().min(1, '가게 이름을 입력해주세요'),
+  storeNameEn: z.string().min(1, '가게 영문 이름을 입력해주세요'),
+  email: z
+    .string()
+    .min(1, '이메일을 입력해주세요')
+    .email('이메일 형식이 올바르지 않습니다'),
+  password: z.string().min(8, '비밀번호는 8자 이상이어야 합니다'),
 });
 
 type SignUpFormData = z.infer<typeof signUpSchema>;
@@ -169,7 +172,7 @@ export default function SignUp() {
   };
 
   return (
-    <div className='min-h-screen flex justify-center bg-white px-4 sm:px-6 lg:px-8'>
+    <div className='min-h-screen flex justify-center bg-white px-4 sm:px-6 lg:px-8 text-sm'>
       <div className=''>
         <div>
           <div className='flex flex-col gap-2'>
@@ -182,7 +185,7 @@ export default function SignUp() {
           </div>
         </div>
         <form
-          className='mt-2 gap-5 w-[360px]'
+          className='mt-2 gap-4 w-[360px]'
           onSubmit={handleSubmit(onSubmit)}
         >
           <div className='rounded-md'>
@@ -211,13 +214,13 @@ export default function SignUp() {
                 )}
               </div>
               {errors.name && (
-                <p className='absolute bottom-[-8px] text-sm text-red-600'>
+                <p className='absolute bottom-[-12px] text-sm text-red-600'>
                   {errors.name.message}
                 </p>
               )}
             </div>
             <div className='flex gap-3 items-center'>
-              <div className='flex flex-col'>
+              <div className='flex flex-col mt-2'>
                 <div className='relative h-20'>
                   <label htmlFor='storeName' className='text-indigo-900'>
                     Store Name (Korean)

@@ -116,7 +116,7 @@ export default function CategoryDeleter({
         <button
           onClick={handleDelete}
           disabled={!selectedCategory || loading}
-          className='flex items-center justify-center gap-2 rounded-2xl hover:cursor-pointer bg-red-500 text-white p-4 w-[200px] disabled:opacity-50'
+          className='flex items-center justify-center gap-2 rounded-2xl hover:cursor-pointer bg-slate-500 text-white p-4 w-[200px] disabled:opacity-50'
         >
           <Image src='/Submit.svg' alt='delete' width={16} height={16} />
           <span className='inter-regular'>

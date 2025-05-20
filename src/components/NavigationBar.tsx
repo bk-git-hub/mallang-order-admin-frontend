@@ -98,13 +98,17 @@ export default function NavigationBar() {
         })}
       </ul>
 
-      <div className='mt-auto mb-8 w-[84%] mx-auto flex items-center justify-end'>
+      <div className='mt-auto mb-8 w-[84%] mx-auto flex items-center gap-2 text-sm'>
+        <button className='flex flex-1 items-center justify-center gap-2 px-4 py-3 rounded-2xl bg-slate-500 text-white hover:opacity-80 hover:cursor-pointer transition'>
+          <Image src='/Delete-admin.svg' alt='탈퇴' width={18} height={18} />
+          <span>탈퇴</span>
+        </button>
         <button
           onClick={handleLogout}
-          className='flex  p-4 rounded-2xl  gap-2 hover:bg-indigo-500  hover:cursor-pointer'
+          className='flex flex-1 items-center justify-center gap-2 px-4 py-3 rounded-2xl bg-indigo-500 text-white hover:opacity-80 hover:cursor-pointer transition'
         >
-          <Image src='/Logout.svg' alt='logout' width={18} height={18} />
-          <p>로그아웃</p>
+          <Image src='/Logout.svg' alt='로그아웃' width={18} height={18} />
+          <span>로그아웃</span>
         </button>
       </div>
     </div>
