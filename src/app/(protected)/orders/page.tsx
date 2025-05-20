@@ -6,17 +6,21 @@ import Image from 'next/image';
 import { toast } from 'sonner';
 
 interface OrderItem {
-  menuId: number;
   menuName: string;
+  menuNameEn: string | null;
   menuPrice: number;
   quantity: number;
-  totalPrice: number;
+}
+
+interface Order {
+  orderId: number;
   createdAt: string;
+  items: OrderItem[];
 }
 
 interface TableOrder {
   kioskNumber: number;
-  Order: OrderItem[];
+  orders: Order[];
 }
 
 interface StoreInfo {
@@ -30,35 +34,24 @@ interface StoreInfo {
 const mockOrders: TableOrder[] = [
   {
     kioskNumber: 1,
-    Order: [
+    orders: [
       {
-        menuId: 1,
-        menuName: '아메리카노',
-        menuPrice: 4500,
-        quantity: 2,
-        totalPrice: 9000,
-        createdAt: new Date(Date.now() - 1000 * 60 * 30).toISOString(), // 30분 전
-      },
-      {
-        menuId: 2,
-        menuName: '카페라떼',
-        menuPrice: 5000,
-        quantity: 1,
-        totalPrice: 5000,
-        createdAt: new Date(Date.now() - 1000 * 60 * 15).toISOString(), // 15분 전
-      },
-    ],
-  },
-  {
-    kioskNumber: 3,
-    Order: [
-      {
-        menuId: 3,
-        menuName: '치즈케이크',
-        menuPrice: 6500,
-        quantity: 1,
-        totalPrice: 6500,
-        createdAt: new Date().toISOString(), // 현재
+        orderId: 1,
+        createdAt: new Date(Date.now() - 1000 * 60 * 30).toISOString(),
+        items: [
+          {
+            menuName: '아메리카노',
+            menuNameEn: null,
+            menuPrice: 4500,
+            quantity: 2,
+          },
+          {
+            menuName: '카페라떼',
+            menuNameEn: null,
+            menuPrice: 5000,
+            quantity: 1,
+          },
+        ],
       },
     ],
   },
@@ -85,8 +78,12 @@ export default function Orders() {
       const storeData: StoreInfo = await storeResponse.json();
       setTableCount(storeData.kioskCount);
 
-      // Mock data refresh
-      setOrders([...mockOrders]);
+      const storeOrderResponse = await fetchWithToken(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/admin/orders`
+      );
+      if (!storeOrderResponse.ok) throw new Error('Failed to fetch orders');
+      const orderData: TableOrder[] = await storeOrderResponse.json();
+      setOrders(orderData);
     } catch (error) {
       console.error('Failed to fetch data:', error);
       toast.error('데이터를 불러오는데 실패했습니다');
@@ -129,6 +126,10 @@ export default function Orders() {
     });
   };
 
+  const calculateTotalPrice = (items: OrderItem[]) => {
+    return items.reduce((sum, item) => sum + item.menuPrice * item.quantity, 0);
+  };
+
   return (
     <div className='h-full flex-1 p-8 flex flex-col gap-[30px] overflow-y-scroll'>
       <div className='flex flex-col'>
@@ -165,9 +166,8 @@ export default function Orders() {
               (tableNum) => {
                 const tableOrder = orders.find(
                   (order) => order.kioskNumber === tableNum
-                );
-                const hasActiveOrders =
-                  tableOrder && tableOrder.Order.length > 0;
+                ) || { kioskNumber: tableNum, orders: [] };
+                const hasActiveOrders = tableOrder.orders.length > 0;
 
                 return (
                   <div
@@ -204,25 +204,33 @@ export default function Orders() {
                       {hasActiveOrders ? (
                         <div className='flex flex-col h-[300px]'>
                           <div className='flex-1 overflow-y-auto space-y-4 pr-2'>
-                            {tableOrder.Order.map((item, index) => (
+                            {tableOrder.orders.map((order) => (
                               <div
-                                key={index}
+                                key={order.orderId}
                                 className='border-t border-indigo-200 pt-4'
                               >
                                 <div className='flex justify-between items-center mb-2'>
                                   <div className='text-sm text-indigo-600'>
-                                    {formatDate(item.createdAt)}
+                                    {formatDate(order.createdAt)}
                                   </div>
                                 </div>
                                 <div className='space-y-2'>
-                                  <div className='flex justify-between text-sm'>
-                                    <span>
-                                      {item.menuName} x {item.quantity}
-                                    </span>
-                                    <span>
-                                      {item.totalPrice.toLocaleString()}원
-                                    </span>
-                                  </div>
+                                  {order.items.map((item, index) => (
+                                    <div
+                                      key={index}
+                                      className='flex justify-between text-sm'
+                                    >
+                                      <span>
+                                        {item.menuName} x {item.quantity}
+                                      </span>
+                                      <span>
+                                        {(
+                                          item.menuPrice * item.quantity
+                                        ).toLocaleString()}
+                                        원
+                                      </span>
+                                    </div>
+                                  ))}
                                 </div>
                               </div>
                             ))}
@@ -231,10 +239,13 @@ export default function Orders() {
                             <div className='flex justify-between font-semibold'>
                               <span>총 금액</span>
                               <span>
-                                {tableOrder.Order.reduce(
-                                  (sum, item) => sum + item.totalPrice,
-                                  0
-                                ).toLocaleString()}
+                                {tableOrder.orders
+                                  .reduce(
+                                    (sum, order) =>
+                                      sum + calculateTotalPrice(order.items),
+                                    0
+                                  )
+                                  .toLocaleString()}
                                 원
                               </span>
                             </div>
@@ -267,14 +278,18 @@ export default function Orders() {
 /*
 {
   kioskNumber: number,
-  Order: [
+  orders: [
     {
-      menuId: number,
-      menuName: string,
-      menuPrice: number,
-      quantity: number,
-      totalPrice: number,
+      orderId: number,
       createdAt: string,
+      items: [
+        {
+          menuName: string,
+          menuNameEn: string | null,
+          menuPrice: number,
+          quantity: number,
+        }
+      ]
     }
   ]
 }
