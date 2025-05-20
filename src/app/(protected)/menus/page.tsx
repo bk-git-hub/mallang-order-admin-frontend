@@ -14,7 +14,7 @@ import {
 interface Menu {
   menuId: number;
   menuName: string;
-  menuNamEn: string;
+  menuNameEn: string;
   menuPrice: number;
   imageUrl?: string;
   adminId: number;
@@ -136,7 +136,7 @@ export default function Menus() {
     setSubmitting(true);
     const formData = new FormData();
     formData.append('menuName', selectedMenu.menuName);
-    formData.append('menuNameEn', selectedMenu.menuNamEn);
+    formData.append('menuNameEn', selectedMenu.menuNameEn);
     formData.append('menuPrice', selectedMenu.menuPrice.toString());
 
     // 기존 카테고리 정보 유지
@@ -349,7 +349,7 @@ export default function Menus() {
                     <h4 className='text-lg font-semibold mt-2'>
                       {menu.menuName}
                     </h4>
-                    <p className='text-sm text-gray-600'>{menu.menuNamEn}</p>
+                    <p className='text-sm text-gray-600'>{menu.menuNameEn}</p>
                     <p className='font-semibold'>
                       {menu.menuPrice.toLocaleString()}원
                     </p>
@@ -408,11 +408,11 @@ export default function Menus() {
                     <label className='inter-semibold'>메뉴 이름 (영문)</label>
                     <input
                       type='text'
-                      value={selectedMenu.menuNamEn}
+                      value={selectedMenu.menuNameEn}
                       onChange={(e) =>
                         setSelectedMenu({
                           ...selectedMenu,
-                          menuNamEn: e.target.value,
+                          menuNameEn: e.target.value,
                         })
                       }
                       className='border border-indigo-300 rounded-2xl p-4 focus:outline-0 focus:border-indigo-600'
