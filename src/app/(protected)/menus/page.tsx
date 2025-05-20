@@ -324,30 +324,34 @@ export default function Menus() {
               {filteredMenus.map((menu) => (
                 <div
                   key={menu.menuId}
-                  className='border border-indigo-300 bg-indigo-100 text-indigo-900 rounded-2xl p-4 flex flex-col gap-2'
+                  className='border border-indigo-300 bg-indigo-100 text-indigo-900 rounded-2xl p-4 flex flex-col h-full'
                 >
-                  {menu.imageUrl && (
-                    <div className='relative w-full h-48 rounded-xl overflow-hidden'>
-                      <Image
-                        src={menu.imageUrl}
-                        alt={menu.menuName}
-                        fill
-                        className='object-cover'
-                      />
-                    </div>
-                  )}
-                  <h4 className='text-lg font-semibold'>{menu.menuName}</h4>
-                  <p className='text-sm text-gray-600'>{menu.menuNamEn}</p>
-                  <p className='font-semibold'>
-                    {menu.menuPrice.toLocaleString()}원
-                  </p>
-                  <p className='text-indigo-500'>
-                    {menu.categories
-                      .filter((cat) => cat.categoryName !== '전체')
-                      .map((cat) => cat.categoryName)
-                      .join(', ')}
-                  </p>
-                  <div className='flex gap-2 mt-2'>
+                  <div className='flex-1'>
+                    {menu.imageUrl && (
+                      <div className='relative w-full h-48 rounded-xl overflow-hidden'>
+                        <Image
+                          src={menu.imageUrl}
+                          alt={menu.menuName}
+                          fill
+                          className='object-cover'
+                        />
+                      </div>
+                    )}
+                    <h4 className='text-lg font-semibold mt-2'>
+                      {menu.menuName}
+                    </h4>
+                    <p className='text-sm text-gray-600'>{menu.menuNamEn}</p>
+                    <p className='font-semibold'>
+                      {menu.menuPrice.toLocaleString()}원
+                    </p>
+                    <p className='text-indigo-500'>
+                      {menu.categories
+                        .filter((cat) => cat.categoryName !== '전체')
+                        .map((cat) => cat.categoryName)
+                        .join(', ')}
+                    </p>
+                  </div>
+                  <div className='flex gap-2 mt-4'>
                     <button
                       onClick={() => setSelectedMenu(menu)}
                       className='flex-1 py-2 px-4 bg-indigo-500 hover:cursor-pointer text-white rounded-xl hover:opacity-80'
