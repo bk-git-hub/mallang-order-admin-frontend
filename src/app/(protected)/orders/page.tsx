@@ -296,7 +296,7 @@ export default function Orders() {
                           </div>
                         </div>
                       ) : (
-                        <div className='flex flex-col gap-2'>
+                        <div className='flex flex-col gap-2 h-[300px]'>
                           <div className='text-center text-indigo-600 py-4 w-full border border-indigo-300 rounded-xl'>
                             주문 없음
                           </div>
