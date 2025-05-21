@@ -108,7 +108,7 @@ export default function NavigationBar() {
 
   return (
     <>
-      <div className='w-[18%] rounded-r-[25px] text-white bg-indigo-600 h-full flex flex-col'>
+      <div className='w-[20%] rounded-r-[25px] text-white bg-indigo-600 h-full flex flex-col'>
         <div className='p-6 flex flex-col items-center gap-4'>
           {storeInfo && (
             <>
