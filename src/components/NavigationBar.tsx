@@ -112,11 +112,25 @@ export default function NavigationBar() {
         <div className='p-6 flex flex-col items-center gap-4'>
           {storeInfo && (
             <>
-              <div className='w-16 h-16 rounded-full bg-indigo-100 flex items-center justify-center'>
-                <span className='text-indigo-600 text-xl font-semibold'>
+              <div
+                className='w-16 h-16 rounded-full bg-indigo-100 bg-gradient-to-br from-indigo-200 to-indigo-400
+               tracking-tight flex items-center justify-center
+              shadow-[0_10px_30px_rgba(99,102,241,0.4)] border border-indigo-300 relative overflow-hidden '
+              >
+                <span
+                  className='text-indigo-600 text-xl font-semibold'
+                  style={{
+                    background:
+                      'linear-gradient(135deg, #5c6ac4 0%, #3b43a9 100%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    filter: 'drop-shadow(0 1px 1px rgba(0,0,0,0.15))',
+                  }}
+                >
                   {storeInfo.adminName.slice(1, 3)}
                 </span>
               </div>
+
               <div className='text-center'>
                 <p className='font-semibold'>{storeInfo.adminName}</p>
                 <p className='text-sm text-indigo-100'>{storeInfo.email}</p>
