@@ -10,6 +10,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import useModal from '@/hooks/useModal';
+import AlertModal from '@/components/AlertModal';
 
 interface Menu {
   menuId: number;
@@ -29,6 +31,31 @@ interface Category {
   categoryName: string;
 }
 
+const useConfirm = () => {
+  const { isOpen, open, close, data } = useModal<{
+    onConfirm: () => void;
+    message: string;
+  }>();
+
+  const ConfirmModal = () => (
+    <AlertModal
+      isOpen={isOpen}
+      onClose={close}
+      onConfirm={() => {
+        if (data?.onConfirm) data.onConfirm();
+        close();
+      }}
+      message={data?.message || ''}
+    />
+  );
+
+  return {
+    confirm: (message: string, onConfirm: () => void) =>
+      open({ message, onConfirm }),
+    ConfirmModal,
+  };
+};
+
 export default function Menus() {
   const [menus, setMenus] = useState<Menu[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
@@ -44,6 +71,8 @@ export default function Menus() {
   const [menuCategory, setMenuCategory] = useState('');
   const [menuImage, setMenuImage] = useState<File | null>(null);
   const [updateImage, setUpdateImage] = useState<File | null>(null);
+
+  const { confirm: confirmAction, ConfirmModal } = useConfirm();
 
   useEffect(() => {
     fetchMenus();
@@ -177,24 +206,24 @@ export default function Menus() {
   };
 
   const handleDeleteMenu = async (menuId: number) => {
-    if (!confirm('정말로 이 메뉴를 삭제하시겠습니까?')) return;
+    confirmAction('정말로 이 메뉴를 삭제하시겠습니까?', async () => {
+      try {
+        const response = await fetchWithToken(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/menu/${menuId}`,
+          {
+            method: 'DELETE',
+          }
+        );
 
-    try {
-      const response = await fetchWithToken(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/menu/${menuId}`,
-        {
-          method: 'DELETE',
-        }
-      );
+        if (!response.ok) throw new Error('메뉴 삭제에 실패했습니다');
 
-      if (!response.ok) throw new Error('메뉴 삭제에 실패했습니다다');
-
-      toast.success('메뉴가 삭제되었습니다');
-      fetchMenus();
-    } catch (error: any) {
-      console.error('Failed to delete menu:', error);
-      toast.error('메뉴 삭제에 실패했습니다');
-    }
+        toast.success('메뉴가 삭제되었습니다');
+        fetchMenus();
+      } catch (error: any) {
+        console.error('Failed to delete menu:', error);
+        toast.error('메뉴 삭제에 실패했습니다');
+      }
+    });
   };
 
   const filteredMenus =
@@ -206,6 +235,7 @@ export default function Menus() {
 
   return (
     <div className='h-full flex-1 p-8 flex flex-col gap-[30px] overflow-y-scroll'>
+      <ConfirmModal />
       <div>
         <h1 className='text-[32px] inter-semibold'>메뉴 관리</h1>
         <h2 className='text-[16px] inter-medium text-ml-gray-dark'>
