@@ -1,9 +1,10 @@
 'use client';
-
 import { useState, useEffect } from 'react';
 import { fetchWithToken } from '@/utils/fetchWithToken';
 import Image from 'next/image';
 import { toast } from 'sonner';
+import AlertModal from '@/components/AlertModal'; // ✅ 모달 컴포넌트
+import useModal from '@/hooks/useModal'; // ✅ 커스텀 모달 훅
 
 interface OrderItem {
   menuName: string;
@@ -32,40 +33,39 @@ interface StoreInfo {
   kioskCount: number;
 }
 
-// Mock data for testing UI
-const mockOrders: Kiosk[] = [
-  {
-    kioskId: 1,
-    kioskNumber: 1,
-    kioskIsActive: true,
-    orders: [
-      {
-        orderId: 1,
-        createdAt: new Date(Date.now() - 1000 * 60 * 30).toISOString(),
-        items: [
-          {
-            menuName: '아메리카노',
-            menuNameEn: null,
-            menuPrice: 4500,
-            quantity: 2,
-          },
-          {
-            menuName: '카페라떼',
-            menuNameEn: null,
-            menuPrice: 5000,
-            quantity: 1,
-          },
-        ],
-      },
-    ],
-  },
-];
+// 모달용 confirm 핸들러 정의
+const useConfirm = () => {
+  const { isOpen, open, close, data } = useModal<{
+    onConfirm: () => void;
+    message: string;
+  }>();
+
+  const ConfirmModal = () => (
+    <AlertModal
+      isOpen={isOpen}
+      onClose={close}
+      onConfirm={() => {
+        if (data?.onConfirm) data.onConfirm();
+        close();
+      }}
+      message={data?.message || ''}
+    />
+  );
+
+  return {
+    confirm: (message: string, onConfirm: () => void) =>
+      open({ message, onConfirm }),
+    ConfirmModal,
+  };
+};
 
 export default function Orders() {
-  const [kiosks, setKiosks] = useState<Kiosk[]>(mockOrders);
+  const [kiosks, setKiosks] = useState<Kiosk[]>([]);
   const [tableCount, setTableCount] = useState<number>(16);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+
+  const { confirm: confirmAction, ConfirmModal } = useConfirm(); // ✅ 모달 기반 confirm 훅
 
   useEffect(() => {
     fetchInitialData();
@@ -96,56 +96,50 @@ export default function Orders() {
     }
   };
 
-  const handleClearOrders = async (kioskNumber: number) => {
-    if (!confirm('정말로 이 테이블의 주문을 비우시겠습니까?')) return;
-
-    setSubmitting(true);
-    try {
-      const response = await fetchWithToken(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/order/by-kiosk/${kioskNumber}`,
-        {
-          method: 'DELETE',
-        }
-      );
-
-      if (!response.ok) throw new Error('Failed to clear orders');
-
-      toast.success('주문이 비워졌습니다');
-      fetchInitialData();
-    } catch (error) {
-      console.error('Failed to clear orders:', error);
-      toast.error('주문 비우기에 실패했습니다');
-    } finally {
-      setSubmitting(false);
-    }
+  const handleClearOrders = (kioskNumber: number) => {
+    confirmAction('정말로 이 테이블의 주문을 비우시겠습니까?', async () => {
+      setSubmitting(true);
+      try {
+        const response = await fetchWithToken(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/order/by-kiosk/${kioskNumber}`,
+          { method: 'DELETE' }
+        );
+        if (!response.ok) throw new Error('Failed to clear orders');
+        toast.success('주문이 비워졌습니다');
+        fetchInitialData();
+      } catch (error) {
+        console.error('Failed to clear orders:', error);
+        toast.error('주문 비우기에 실패했습니다');
+      } finally {
+        setSubmitting(false);
+      }
+    });
   };
 
-  const handleDeactivateKiosk = async (kioskId: number) => {
-    if (!confirm('정말로 이 테이블을 비활성화하시겠습니까?')) return;
-
-    setSubmitting(true);
-    try {
-      const response = await fetchWithToken(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/kiosk/deactivate`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ kioskId }),
-        }
-      );
-
-      if (!response.ok) throw new Error('Failed to deactivate kiosk');
-
-      toast.success('테이블이 비활성화되었습니다');
-      fetchInitialData();
-    } catch (error) {
-      console.error('Failed to deactivate kiosk:', error);
-      toast.error('테이블 비활성화에 실패했습니다');
-    } finally {
-      setSubmitting(false);
-    }
+  const handleDeactivateKiosk = (kioskId: number) => {
+    confirmAction('정말로 이 테이블을 비활성화하시겠습니까?', async () => {
+      setSubmitting(true);
+      try {
+        const response = await fetchWithToken(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/kiosk/deactivate`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ kioskId }),
+          }
+        );
+        if (!response.ok) throw new Error('Failed to deactivate kiosk');
+        toast.success('테이블이 비활성화되었습니다');
+        fetchInitialData();
+      } catch (error) {
+        console.error('Failed to deactivate kiosk:', error);
+        toast.error('테이블 비활성화에 실패했습니다');
+      } finally {
+        setSubmitting(false);
+      }
+    });
   };
 
   const formatDate = (dateString: string) => {
@@ -164,13 +158,13 @@ export default function Orders() {
 
   return (
     <div className='h-full flex-1 p-8 flex flex-col gap-[30px] overflow-y-scroll'>
+      <ConfirmModal /> {/* ✅ 모달 렌더링 */}
       <div className='flex flex-col'>
         <h1 className='text-[32px] inter-semibold'>주문 관리</h1>
         <h2 className='text-[16px] inter-medium text-ml-gray-dark'>
           Order Management
         </h2>
       </div>
-
       <div className='bg-white rounded-3xl p-6 flex flex-col gap-8'>
         <div className='flex justify-between items-center'>
           <h3 className='text-[18px] inter-semibold'>테이블별 주문 현황</h3>
