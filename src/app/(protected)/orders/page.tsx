@@ -26,13 +26,6 @@ interface Kiosk {
   orders: Order[];
 }
 
-interface StoreInfo {
-  email: string;
-  adminName: string;
-  storeName: string;
-  kioskCount: number;
-}
-
 // 모달용 confirm 핸들러 정의
 const useConfirm = () => {
   const { isOpen, open, close, data } = useModal<{
@@ -74,19 +67,12 @@ export default function Orders() {
   const fetchInitialData = async () => {
     try {
       setLoading(true);
-
-      const storeResponse = await fetchWithToken(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/admin/store-info`
-      );
-      if (!storeResponse.ok) throw new Error('Failed to fetch store info');
-      const storeData: StoreInfo = await storeResponse.json();
-      setTableCount(storeData.kioskCount);
-
       const storeOrderResponse = await fetchWithToken(
         `${process.env.NEXT_PUBLIC_API_URL}/api/admin/orders`
       );
       if (!storeOrderResponse.ok) throw new Error('Failed to fetch orders');
       const orderData: Kiosk[] = await storeOrderResponse.json();
+      setTableCount(orderData.length);
       setKiosks(orderData);
     } catch (error) {
       console.error('Failed to fetch data:', error);
